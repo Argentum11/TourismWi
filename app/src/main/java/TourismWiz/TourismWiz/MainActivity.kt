@@ -1,5 +1,7 @@
 package TourismWiz.TourismWiz
 
+import City
+import TDXApiService
 import TourismWiz.TourismWiz.network.TDXTokenApi
 import TourismWiz.TourismWiz.network.TokenResponse
 import android.os.Bundle
@@ -34,13 +36,27 @@ class MainActivity : ComponentActivity() {
                     Greeting("Android")
                     runBlocking {
                         launch {
+                            //val restaurantList = TDXApi.retrofitService.getRestaurants(City.keelung)
+
+                            var token  =""
+                            var headers = mapOf("authorization" to "Bearer $token")
+                            var restaurantList = TDXApi.retrofitService.getRestaurants(city = City.miaoliCounty, headers)
+                            Log.w("restaurant",restaurantList.size.toString())
+
+                            /*for(city in City.javaClass.declaredFields){
+                                city.isAccessible=true
+                                Log.w("restaurant",city.get(City).toString())
+
+                            }*/
+
+                            /*
                             TDXTokenApi.retrofitService
-                                .getUserLogin("client_credentials", "Don't push to Github","Don't push to Github")
+                                .getUserLogin("client_credentials", "","")
                                 .enqueue(object : Callback<TokenResponse> {
                                     override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
                                         if (response.isSuccessful) {
                                             val responseData = response.body() // 获取响应数据
-                                            Log.w("qwer312123",responseData!!.access_token)
+                                            Log.w("token",responseData!!.access_token)
                                         } else {
                                             // 处理非成功响应
                                         }
@@ -50,12 +66,15 @@ class MainActivity : ComponentActivity() {
                                         //TODO: alert user that there is error getting data
                                     }
                                 })
+                             */
                         }
                     }
                 }
             }
         }
     }
+
+
 }
 
 @Composable
