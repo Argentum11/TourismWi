@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TourismWiz</string>
+    <string name="retry">重新搜尋</string>
+    <string name="search_failed">搜尋失敗</string>
 </resources>

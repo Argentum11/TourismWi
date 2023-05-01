@@ -1,4 +1,4 @@
-package TourismWiz.TourismWiz.network
+package TourismWiz.TourismWiz.model
 
 import kotlinx.serialization.Serializable
 
