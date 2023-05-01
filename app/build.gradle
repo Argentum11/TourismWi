@@ -5,6 +5,15 @@ plugins {
 }
 
 def localPropertiesFile = rootProject.file("local.properties")
+if (!localPropertiesFile.exists()) {
+    def fakeLocalPropertiesFile = rootProject.file("fakeLocal.properties")
+    if (fakeLocalPropertiesFile.exists()) {
+        localPropertiesFile = fakeLocalPropertiesFile
+    } else {
+        throw new FileNotFoundException("local.properties or fakeLocal.properties file not found!")
+    }
+}
+
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
