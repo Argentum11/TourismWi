@@ -25,7 +25,7 @@ data class TokenResponse(
     var scope: String
 )
 
-interface tokenService{
+interface TokenService{
     @FormUrlEncoded
     @POST("token/")
     fun getUserLogin(
@@ -36,7 +36,7 @@ interface tokenService{
 }
 
 object TDXTokenApi {
-    val retrofitService : tokenService by lazy {
-        retrofit.create(tokenService::class.java)
+    val retrofitService : TokenService by lazy {
+        retrofit.create(TokenService::class.java)
     }
 }

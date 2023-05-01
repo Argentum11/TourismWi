@@ -1,22 +1,15 @@
+package TourismWiz.TourismWiz.network
+
 import TourismWiz.TourismWiz.model.Restaurant
-import retrofit2.Retrofit
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType
 import retrofit2.http.*
 
 interface RestaurantApiService {
-
-
     @GET("v2/Tourism/Restaurant/{city}?%24top=100&%24format=JSON")
     suspend fun getRestaurants(
-        @Path("city") city: String? = "Taoyuan",
+        @Path("city") city: String? = "",
         @HeaderMap headers: Map<String, String>
     ): List<Restaurant>
 }
-
-//todo config token parameter
-//todo config city parameter
 
 object City{
     const val taipei = "Taipei"
@@ -41,19 +34,4 @@ object City{
     const val kinmenCounty = "KinmenCounty"
     const val penghuCounty = "PenghuCounty"
     const val lienchiangCounty = "LienchiangCounty"
-}
-
-//Delete if success
-
-private const val BASE_URL =
-    "https://tdx.transportdata.tw/api/basic/"
-//private const
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory(MediaType.get("application/json")))
-    .baseUrl(BASE_URL)
-    .build()
-object TDXApi {
-    val retrofitService : RestaurantApiService by lazy {
-       retrofit.create(RestaurantApiService::class.java)
-    }
 }

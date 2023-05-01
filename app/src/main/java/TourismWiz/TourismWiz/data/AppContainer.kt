@@ -1,6 +1,6 @@
 package TourismWiz.TourismWiz.data
 
-import RestaurantApiService
+import TourismWiz.TourismWiz.network.RestaurantApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
