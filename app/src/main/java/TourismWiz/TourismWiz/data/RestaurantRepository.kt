@@ -4,8 +4,6 @@ import RestaurantApiService
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.network.TDXTokenApi
 import TourismWiz.TourismWiz.network.TokenResponse
-import TourismWiz.TourismWiz.token
-import android.util.Log
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.*
@@ -18,8 +16,8 @@ interface RestaurantRepository {
 }
 class NetworkRestaurantRepository(private val restaurantApiService: RestaurantApiService): RestaurantRepository {
     var headers=mapOf("authorization" to "Bearer 123")
-    val clientID = "00957050-3b2adeb1-206e-45bc"
-    val clientSecret = "0d104935-2980-4680-9758-4f05bd908928"
+    val clientID = ""
+    val clientSecret = ""
     fun getToken(){
         runBlocking {
                 launch{
