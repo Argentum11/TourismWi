@@ -15,7 +15,7 @@ object City{
     const val nantouCounty = "NantouCounty"
     const val yunlinCounty = "YunlinCounty"
     const val chiayiCounty = "ChiayiCounty"
-    const val chaiyi = "Chiayi"
+    const val chiayi = "Chiayi"
     const val pingtungCounty = "PingtungCounty"
     const val yilanCounty = "YilanCounty"
     const val hualienCounty = "HualienCounty"

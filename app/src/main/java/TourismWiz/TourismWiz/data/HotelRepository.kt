@@ -55,6 +55,6 @@ class NetworkHotelRepository(private val hotelApiService: HotelApiService) : Hot
     override suspend fun getHotels(): List<Hotel> {
         getToken()
         delay(2000)
-        return hotelApiService.getHotels(City.hsinchu, headers)
+        return hotelApiService.getHotels(City.lienchiangCounty, headers)
     }
 }
