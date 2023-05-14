@@ -29,7 +29,7 @@ class RestaurantViewModel(private val restaurantRepository:RestaurantRepository)
     private var reachableRestaurant: MutableSet<String> = mutableSetOf()
 
     init{
-        getRestaurants(City.kinmenCounty)
+        getRestaurants(City.defaultCity)
     }
 
     fun getRestaurants(city:String){

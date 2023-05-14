@@ -27,19 +27,13 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
         ) {
             val restaurantViewModel: RestaurantViewModel =
                 viewModel(factory = RestaurantViewModel.Factory)
-            //var city by remember { mutableStateOf("") }
             var selectedCity by remember {
-                mutableStateOf(City.cities[0])
+                mutableStateOf(City.defaultCity)
             }
             var expanded by remember { mutableStateOf(false) }
             val contextForToast = LocalContext.current.applicationContext
 
             Column() {
-                /*Button(onClick = {
-                    restaurantViewModel.getRestaurants(selectedCity)
-                }) {
-                    Text("change city")
-                }*/
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = {
@@ -51,7 +45,7 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                         value = selectedCity,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text(text = "Label") },
+                        label = { Text(text = "City") },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = expanded
