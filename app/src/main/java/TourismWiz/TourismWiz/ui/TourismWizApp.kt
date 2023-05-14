@@ -1,8 +1,7 @@
 package TourismWiz.TourismWiz.ui
 
-import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
+import TourismWiz.TourismWiz.ui.screens.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -24,10 +23,20 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 .padding(it),
             color = MaterialTheme.colors.background
         ) {
-            val restaurantViewModel : RestaurantViewModel = viewModel(factory = RestaurantViewModel.Factory)
+            /*val restaurantViewModel : RestaurantViewModel = viewModel(factory = RestaurantViewModel.Factory)
             RestaurantScreen(
                 restaurantUiState = restaurantViewModel.restaurantUiState,
                 retryAction = restaurantViewModel::getRestaurants
+            )*/
+//            val hotelViewModel : HotelViewModel = viewModel(factory = HotelViewModel.Factory)
+//            HotelScreen(
+//                hotelUiState = hotelViewModel.hotelUiState,
+//                retryAction = hotelViewModel::getHotels
+//            )
+            val scenicSpotViewModel : ScenicSpotViewModel = viewModel(factory = ScenicSpotViewModel.Factory)
+            ScenicSpotScreen(
+                scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
+                retryAction = scenicSpotViewModel::getScenicSpots
             )
         }
     }
