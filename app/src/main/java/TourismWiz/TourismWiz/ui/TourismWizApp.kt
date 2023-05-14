@@ -30,5 +30,6 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 retryAction = restaurantViewModel::getRestaurants
             )
         }
+
     }
 }

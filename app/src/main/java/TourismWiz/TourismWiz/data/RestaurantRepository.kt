@@ -3,6 +3,7 @@ package TourismWiz.TourismWiz.data
 import TourismWiz.TourismWiz.network.RestaurantApiService
 import TourismWiz.TourismWiz.BuildConfig
 import TourismWiz.TourismWiz.model.Restaurant
+import TourismWiz.TourismWiz.network.City
 import TourismWiz.TourismWiz.network.TDXTokenApi
 import TourismWiz.TourismWiz.network.TokenResponse
 import android.util.Log
@@ -53,7 +54,7 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
     override suspend fun getRestaurants(): List<Restaurant>{
         getToken()
         delay(2000)
-        return restaurantApiService.getRestaurants("Keelung", headers)
+        return restaurantApiService.getRestaurants(City.lienchiangCounty, headers)
     }
 }
 
