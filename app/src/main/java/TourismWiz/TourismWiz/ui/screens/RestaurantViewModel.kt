@@ -3,6 +3,7 @@ package TourismWiz.TourismWiz.ui.screens
 import TourismWiz.TourismWiz.RestaurantApplication
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.data.RestaurantRepository
+import TourismWiz.TourismWiz.network.City
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,14 +29,14 @@ class RestaurantViewModel(private val restaurantRepository:RestaurantRepository)
     private var reachableRestaurant: MutableSet<String> = mutableSetOf()
 
     init{
-        getRestaurants()
+        getRestaurants(City.kinmenCounty)
     }
 
-    fun getRestaurants(){
+    fun getRestaurants(city:String){
         viewModelScope.launch {
             restaurantUiState = RestaurantUiState.Loading
             restaurantUiState = try {
-                RestaurantUiState.Success(restaurantRepository.getRestaurants())
+                RestaurantUiState.Success(restaurantRepository.getRestaurants(city))
             } catch (error: IOException){
                 RestaurantUiState.Error
             } catch (error: HttpException){

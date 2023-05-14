@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 interface RestaurantRepository {
-    suspend fun getRestaurants(): List<Restaurant>
+    suspend fun getRestaurants(city: String): List<Restaurant>
 }
 class NetworkRestaurantRepository(private val restaurantApiService: RestaurantApiService): RestaurantRepository {
 
@@ -50,10 +50,10 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
             }
         }
     }
-    override suspend fun getRestaurants(): List<Restaurant>{
+    override suspend fun getRestaurants(city:String): List<Restaurant>{
         getToken()
         delay(2000)
-        return restaurantApiService.getRestaurants("Keelung", headers)
+        return restaurantApiService.getRestaurants(city, headers)
     }
 }
 
