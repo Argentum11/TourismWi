@@ -2,48 +2,86 @@ package TourismWiz.TourismWiz.ui
 
 import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.network.City
+import TourismWiz.TourismWiz.model.City
 import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TourismWizApp(modifier: Modifier = Modifier) {
-    Scaffold (
-        modifier = Modifier
-            .fillMaxSize(),
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name))}) }
-    ) {
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
-            color = MaterialTheme.colors.background
+                .padding(it), color = MaterialTheme.colors.background
         ) {
-            val restaurantViewModel : RestaurantViewModel = viewModel(factory = RestaurantViewModel.Factory)
-            var city = remember { mutableStateOf("") }
+            val restaurantViewModel: RestaurantViewModel =
+                viewModel(factory = RestaurantViewModel.Factory)
+            //var city by remember { mutableStateOf("") }
+            var selectedCity by remember {
+                mutableStateOf(City.cities[0])
+            }
+            var expanded by remember { mutableStateOf(false) }
+            val contextForToast = LocalContext.current.applicationContext
+
             Column() {
-                Button(onClick = { Log.e("waxa294", city.value)
-                    city.value = City.kaohsiung
-                    Log.e("waxa294", city.value)
-                    restaurantViewModel.getRestaurants(city.value)
-                }
-                ) {
+                /*Button(onClick = {
+                    restaurantViewModel.getRestaurants(selectedCity)
+                }) {
                     Text("change city")
+                }*/
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = {
+                        expanded = !expanded
+                    }
+                ) {
+                    // text field
+                    TextField(
+                        value = selectedCity,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(text = "Label") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expanded
+                            )
+                        },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+
+                    // menu
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        // this is a column scope
+                        // all the items are added vertically
+                        City.cities.forEach { selectedOption ->
+                            // menu item
+                            DropdownMenuItem(onClick = {
+                                selectedCity = selectedOption
+                                Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
+                                expanded = false
+                                restaurantViewModel.getRestaurants(selectedCity)
+                            }) {
+                                Text(text = selectedOption)
+                            }
+                        }
+                    }
                 }
-                RestaurantScreen(
-                    restaurantUiState = restaurantViewModel.restaurantUiState,
-                    retryAction = { restaurantViewModel.getRestaurants(city.value) }
-                )
+                RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
+                    retryAction = { restaurantViewModel.getRestaurants(selectedCity) })
             }
 
         }
