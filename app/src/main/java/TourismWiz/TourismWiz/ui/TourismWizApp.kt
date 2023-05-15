@@ -1,9 +1,9 @@
 package TourismWiz.TourismWiz.ui
 
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.model.City
 import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
 import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
+import TourismWiz.TourismWiz.data.City
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

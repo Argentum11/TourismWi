@@ -23,4 +23,29 @@ object City{
     const val kinmenCounty = "KinmenCounty"
     const val penghuCounty = "PenghuCounty"
     const val lienchiangCounty = "LienchiangCounty"
+    const val defaultCity = tainan
+    val cities = arrayOf(
+        City.taipei,
+        City.newTaipei,
+        City.taoyuan,
+        City.taichung,
+        City.tainan,
+        City.kaohsiung,
+        City.keelung,
+        City.hsinchu,
+        City.hsinchuCounty,
+        City.miaoliCounty,
+        City.changhuaCounty,
+        City.nantouCounty,
+        City.yunlinCounty,
+        City.chiayiCounty,
+        City.chiayi,
+        City.pingtungCounty,
+        City.yilanCounty,
+        City.hualienCounty,
+        City.taitungCounty,
+        City.kinmenCounty,
+        City.penghuCounty,
+        City.lienchiangCounty
+    )
 }

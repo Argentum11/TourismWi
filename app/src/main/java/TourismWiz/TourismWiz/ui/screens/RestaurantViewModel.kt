@@ -3,7 +3,7 @@ package TourismWiz.TourismWiz.ui.screens
 import TourismWiz.TourismWiz.RestaurantApplication
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.data.RestaurantRepository
-import TourismWiz.TourismWiz.model.City
+import TourismWiz.TourismWiz.data.City
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
