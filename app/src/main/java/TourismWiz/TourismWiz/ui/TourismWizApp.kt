@@ -1,8 +1,7 @@
 package TourismWiz.TourismWiz.ui
 
-import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
+import TourismWiz.TourismWiz.ui.screens.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -29,7 +28,16 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 restaurantUiState = restaurantViewModel.restaurantUiState,
                 retryAction = restaurantViewModel::getRestaurants
             )
+//            val hotelViewModel : HotelViewModel = viewModel(factory = HotelViewModel.Factory)
+//            HotelScreen(
+//                hotelUiState = hotelViewModel.hotelUiState,
+//                retryAction = hotelViewModel::getHotels
+//            )
+//            val scenicSpotViewModel : ScenicSpotViewModel = viewModel(factory = ScenicSpotViewModel.Factory)
+//            ScenicSpotScreen(
+//                scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
+//                retryAction = scenicSpotViewModel::getScenicSpots
+//            )
         }
-
     }
 }

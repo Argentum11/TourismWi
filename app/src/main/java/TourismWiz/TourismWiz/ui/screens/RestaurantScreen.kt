@@ -141,7 +141,3 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
         }
     }
 }
-
-
-
-
