@@ -1,6 +1,5 @@
 package TourismWiz.TourismWiz.ui
 
-import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.model.City
 import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
