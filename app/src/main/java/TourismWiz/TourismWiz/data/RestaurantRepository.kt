@@ -53,7 +53,7 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
     override suspend fun getRestaurants(): List<Restaurant>{
         getToken()
         delay(2000)
-        return restaurantApiService.getRestaurants("Keelung", headers)
+        return restaurantApiService.getRestaurants(City.lienchiangCounty, headers)
     }
 }
 

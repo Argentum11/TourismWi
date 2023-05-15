@@ -1,6 +1,5 @@
 package TourismWiz.TourismWiz.network
 
-import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.ScenicSpot
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
