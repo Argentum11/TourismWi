@@ -3,7 +3,6 @@ package TourismWiz.TourismWiz.data
 import TourismWiz.TourismWiz.network.RestaurantApiService
 import TourismWiz.TourismWiz.BuildConfig
 import TourismWiz.TourismWiz.model.Restaurant
-import TourismWiz.TourismWiz.data.City
 import TourismWiz.TourismWiz.network.TDXTokenApi
 import TourismWiz.TourismWiz.network.TokenResponse
 import android.util.Log

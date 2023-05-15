@@ -1,9 +1,7 @@
 package TourismWiz.TourismWiz.data
 
 import TourismWiz.TourismWiz.BuildConfig
-import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.ScenicSpot
-import TourismWiz.TourismWiz.network.HotelApiService
 import TourismWiz.TourismWiz.network.ScenicSpotApiService
 import TourismWiz.TourismWiz.network.TDXTokenApi
 import TourismWiz.TourismWiz.network.TokenResponse

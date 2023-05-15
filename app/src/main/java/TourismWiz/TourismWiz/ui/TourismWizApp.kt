@@ -9,17 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-package TourismWiz.TourismWiz.ui
-
-import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.ui.screens.*
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TourismWizApp(modifier: Modifier = Modifier) {
