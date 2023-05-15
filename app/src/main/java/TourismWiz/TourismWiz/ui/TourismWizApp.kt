@@ -42,10 +42,9 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 ) {
                     // text field
                     TextField(
-                        value = selectedCity,
-                        onValueChange = {},
+                        stringResource(id = City.mapEnToUserLanguage!!.get(selectedCity) ?: R.string.error ), {},
                         readOnly = true,
-                        label = { Text(text = "City") },
+                        label = { Text(text = stringResource(id = R.string.city)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = expanded
@@ -69,7 +68,7 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                                 expanded = false
                                 restaurantViewModel.getRestaurants(selectedCity)
                             }) {
-                                Text(text = selectedOption)
+                                Text(text = stringResource(id = City.mapEnToUserLanguage?.get(selectedOption) ?: R.string.error))
                             }
                         }
                     }
