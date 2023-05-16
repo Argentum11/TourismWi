@@ -33,16 +33,16 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
             var expanded by remember { mutableStateOf(false) }
             val contextForToast = LocalContext.current.applicationContext
 
-            Column() {
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
+            Column {
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
+                    expanded = !expanded
+                }) {
                     // text field
                     TextField(
-                        stringResource(id = City.mapEnToUserLanguage!!.get(selectedCity) ?: R.string.error ), {},
+                        stringResource(
+                            id = City.getStringId(selectedCity)
+                        ),
+                        {},
                         readOnly = true,
                         label = { Text(text = stringResource(id = R.string.city)) },
                         trailingIcon = {
@@ -56,19 +56,30 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                     // menu
                     ExposedDropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
+                        onDismissRequest = { expanded = false }) {
                         // this is a column scope
                         // all the items are added vertically
                         City.cities.forEach { selectedOption ->
                             // menu item
                             DropdownMenuItem(onClick = {
                                 selectedCity = selectedOption
-                                Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    contextForToast, contextForToast.getText(
+                                        City.getStringId(
+                                            selectedOption
+                                        )
+                                    ), Toast.LENGTH_SHORT
+                                ).show()
                                 expanded = false
                                 restaurantViewModel.getRestaurants(selectedCity)
                             }) {
-                                Text(text = stringResource(id = City.mapEnToUserLanguage?.get(selectedOption) ?: R.string.error))
+                                Text(
+                                    text = stringResource(
+                                        id = City.getStringId(
+                                            selectedOption
+                                        )
+                                    )
+                                )
                             }
                         }
                     }

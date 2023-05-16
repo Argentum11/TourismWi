@@ -2,7 +2,7 @@ package TourismWiz.TourismWiz.data
 
 import TourismWiz.TourismWiz.R
 
-object City{
+object City {
     const val taipei = "Taipei"
     const val newTaipei = "NewTaipei"
     const val taoyuan = "Taoyuan"
@@ -50,6 +50,9 @@ object City{
         lienchiangCounty to R.string.lienchiangCounty
     )
 
+    fun getStringId(city: String): Int {
+        return mapEnToUserLanguage.get(city) ?: R.string.newTaipei
+    }
     const val defaultCity = tainan
     val cities = arrayOf(
         taipei,
