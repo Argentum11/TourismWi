@@ -5,10 +5,6 @@ import TourismWiz.TourismWiz.ui.screens.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -105,6 +101,9 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                         restaurantUiState = restaurantViewModel.restaurantUiState,
                         retryAction = restaurantViewModel::getRestaurants
                     )
+                }
+                3 -> {
+                    // TODO user page
                 }
             }
         }
