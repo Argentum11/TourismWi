@@ -1,72 +1,147 @@
 package TourismWiz.TourismWiz.ui
 
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.ui.screens.RestaurantScreen
-import TourismWiz.TourismWiz.ui.screens.RestaurantViewModel
 import TourismWiz.TourismWiz.data.City
+import TourismWiz.TourismWiz.ui.screens.*
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+
 @Composable
 fun TourismWizApp(modifier: Modifier = Modifier) {
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }) {
+    val selectedScreenIndex = remember { mutableStateOf(0) }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
+        bottomBar = {
+            BottomAppBar(backgroundColor = Color.White) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(
+                        onClick = { selectedScreenIndex.value = 0 },
+                        modifier = Modifier.size(24.dp) // 設定IconButton的大小為24dp
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.hotel),
+                            contentDescription = "按鈕3"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { selectedScreenIndex.value = 1 },
+                        modifier = Modifier.size(24.dp) // 設定IconButton的大小為24dp
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ferriswheel),
+                            contentDescription = "按鈕3"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { selectedScreenIndex.value = 2 },
+                        modifier = Modifier.size(24.dp) // 設定IconButton的大小為24dp
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.restaurant),
+                            contentDescription = "按鈕3"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { selectedScreenIndex.value = 2 },
+                        modifier = Modifier.size(24.dp) // 設定IconButton的大小為24dp
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.user),
+                            contentDescription = "按鈕3"
+                        )
+                    }
+                }
+            }
+        }
+    ) { padding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it), color = MaterialTheme.colors.background
+                .padding(padding),
+            color = MaterialTheme.colors.background
         ) {
-            val restaurantViewModel: RestaurantViewModel =
-                viewModel(factory = RestaurantViewModel.Factory)
-            var selectedCity by remember {
-                mutableStateOf(City.defaultCity)
-            }
-            var searchText by remember { mutableStateOf("") }
-            var expanded by remember { mutableStateOf(false) }
-            val contextForToast = LocalContext.current.applicationContext
-
-            Column {
-                CitySelector(
-                    expanded = expanded,
-                    onExpandedChange = { isExpanded -> expanded = isExpanded },
-                    selectedCity = selectedCity,
-                    onCitySelected = { city ->
-                        selectedCity = city
-                        Toast.makeText(
-                            contextForToast,
-                            contextForToast.getText(City.getStringId(city)),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        expanded = false
-                        restaurantViewModel.getRestaurants(selectedCity)
+            when (selectedScreenIndex.value) {
+                0 -> {
+                    val hotelViewModel: HotelViewModel = viewModel(factory = HotelViewModel.Factory)
+                    HotelScreen(
+                        hotelUiState = hotelViewModel.hotelUiState,
+                        retryAction = hotelViewModel::getHotels
+                    )
+                }
+                1 -> {
+                    val scenicSpotViewModel: ScenicSpotViewModel =
+                        viewModel(factory = ScenicSpotViewModel.Factory)
+                    ScenicSpotScreen(
+                        scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
+                        retryAction = scenicSpotViewModel::getScenicSpots
+                    )
+                }
+                2 -> {
+                    val restaurantViewModel: RestaurantViewModel =
+                        viewModel(factory = RestaurantViewModel.Factory)
+                    var selectedCity by remember {
+                        mutableStateOf(City.defaultCity)
                     }
-                )
-                TextField(
-                    value = searchText,
-                    onValueChange = { newValue -> searchText = newValue },
-                    label = { Text(stringResource(R.string.keyword)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                )
-                RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
-                    retryAction = { restaurantViewModel.getRestaurants(selectedCity) }, searchText = searchText)
+                    var searchText by remember { mutableStateOf("") }
+                    var expanded by remember { mutableStateOf(false) }
+                    val contextForToast = LocalContext.current.applicationContext
+                    Column {
+                        CitySelector(
+                            expanded = expanded,
+                            onExpandedChange = { isExpanded -> expanded = isExpanded },
+                            selectedCity = selectedCity,
+                            onCitySelected = { city ->
+                                selectedCity = city
+                                Toast.makeText(
+                                    contextForToast,
+                                    contextForToast.getText(City.getStringId(city)),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                expanded = false
+                                restaurantViewModel.getRestaurants(selectedCity)
+                            }
+                        )
+                        TextField(
+                            value = searchText,
+                            onValueChange = { newValue -> searchText = newValue },
+                            label = { Text(stringResource(R.string.keyword)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                        RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
+                            retryAction = { restaurantViewModel.getRestaurants(selectedCity) }, searchText = searchText)
+                    }
+                }
+                3 -> {
+                    // TODO user page
+                }
             }
-
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

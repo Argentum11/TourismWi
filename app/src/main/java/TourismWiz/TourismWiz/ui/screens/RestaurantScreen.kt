@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,11 +39,16 @@ fun RestaurantScreen(
 }
 
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier){
-    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()){
-        Text("TODO loading")
+fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator() // 進度指示器，表示正在加載
     }
 }
+
+
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier){
     Column (
@@ -113,7 +115,7 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 } else {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(restaurant.Picture?.PictureUrl1)
+                            .data(restaurant.Picture.PictureUrl1)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Restaurant Image",
