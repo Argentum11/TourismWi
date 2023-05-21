@@ -32,14 +32,28 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 mutableStateOf(City.defaultCity)
             }
             var searchText by remember { mutableStateOf("") }
-            
+            var expanded by remember { mutableStateOf(false) }
             val contextForToast = LocalContext.current.applicationContext
 
             Column {
-
+                CitySelector(
+                    expanded = expanded,
+                    onExpandedChange = { isExpanded -> expanded = isExpanded },
+                    selectedCity = selectedCity,
+                    onCitySelected = { city ->
+                        selectedCity = city
+                        Toast.makeText(
+                            contextForToast,
+                            contextForToast.getText(City.getStringId(city)),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        expanded = false
+                        restaurantViewModel.getRestaurants(selectedCity)
+                    }
+                )
                 TextField(
                     value = searchText,
-                    onValueChange = { searchText = it },
+                    onValueChange = { newValue -> searchText = newValue },
                     label = { Text(stringResource(R.string.keyword)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -53,55 +67,33 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
     }
 }
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CitySelector(){
-    var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
-        expanded = !expanded
-    }) {
-        // text field
-        TextField(stringResource(
-            id = City.getStringId(selectedCity)
-        ),
+fun CitySelector(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    selectedCity: String,
+    onCitySelected: (String) -> Unit
+) {
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
+        TextField(
+            stringResource(id = City.getStringId(selectedCity)),
             {},
             readOnly = true,
             label = { Text(text = stringResource(id = R.string.city)) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
-            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
 
-        // menu
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }) {
-            // this is a column scope
-            // all the items are added vertically
-            City.cities.forEach { selectedOption ->
-                // menu item
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
+            val citiesForRestaurant = City.cities.filterNot { it == City.taipei }
+
+            citiesForRestaurant.forEach { selectedOption ->
                 DropdownMenuItem(onClick = {
-                    selectedCity = selectedOption
-                    Toast.makeText(
-                        contextForToast, contextForToast.getText(
-                            City.getStringId(
-                                selectedOption
-                            )
-                        ), Toast.LENGTH_SHORT
-                    ).show()
-                    expanded = false
-                    restaurantViewModel.getRestaurants(selectedCity)
+                    onCitySelected(selectedOption)
                 }) {
-                    Text(
-                        text = stringResource(
-                            id = City.getStringId(
-                                selectedOption
-                            )
-                        )
-                    )
+                    Text(text = stringResource(id = City.getStringId(selectedOption)))
                 }
             }
         }
