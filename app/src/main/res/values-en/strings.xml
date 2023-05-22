@@ -29,4 +29,5 @@
     <string name="lienchiangCounty">Lienchiang County</string>
     <string name="keyword">keyword</string>
     <string name="noPreviousPage">already first page</string>
+    <string name="noNextPage">already last page</string>
 </resources>

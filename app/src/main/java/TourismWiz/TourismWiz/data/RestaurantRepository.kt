@@ -21,7 +21,7 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
     var headers=mapOf("authorization" to "Bearer 123")
     private val clientID = BuildConfig.CLIENT_ID
     private val clientSecret = BuildConfig.CLIENT_SECRET
-    private val numberOfDataInOnePage = 10 //1_000
+
 
     private fun getToken(){
         runBlocking {

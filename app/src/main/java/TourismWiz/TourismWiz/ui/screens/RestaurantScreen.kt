@@ -29,12 +29,13 @@ fun RestaurantScreen(
     restaurantUiState: RestaurantUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    searchText:String
+    searchText:String,
+    onTotalUpdated: (Int) -> Unit
 ) {
     when (restaurantUiState){
         is RestaurantUiState.Loading -> LoadingScreen(modifier)
         is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
-        is RestaurantUiState.Success -> RestaurantGridScreen(restaurants = restaurantUiState.restaurants, modifier, searchText)
+        is RestaurantUiState.Success -> RestaurantGridScreen(restaurants = restaurantUiState.restaurants, modifier, searchText, onTotalUpdated)
     }
 }
 
@@ -64,11 +65,13 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier){
 }
 
 @Composable
-fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Modifier, searchText: String) {
+fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Modifier, searchText: String, onTotalUpdated: (Int) -> Unit) {
     val filteredRestaurants = restaurants.filter { restaurant ->
         restaurant.RestaurantName.contains(searchText, ignoreCase = true)||
                 restaurant.Description.contains(searchText, ignoreCase = true)
     }
+    val total = filteredRestaurants.size
+    onTotalUpdated(total)
     LazyVerticalGrid(
         columns = GridCells.Fixed(1),
         modifier = modifier.fillMaxWidth(),

@@ -2,6 +2,7 @@ package TourismWiz.TourismWiz.ui
 
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.City
+import TourismWiz.TourismWiz.data.numberOfDataInOnePage
 import TourismWiz.TourismWiz.ui.screens.*
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -107,6 +108,7 @@ fun TourismWizApp() {
                     var searchText by remember { mutableStateOf("") }
                     var expanded by remember { mutableStateOf(false) }
                     var pageNumber by remember { mutableStateOf(1) }
+                    var restaurantTotal by remember { mutableStateOf(0) }
                     val contextForToast = LocalContext.current.applicationContext
                     Column {
                         CitySelector(
@@ -149,8 +151,16 @@ fun TourismWizApp() {
                             }
                             Text(text = pageNumber.toString())
                             Button(onClick = {
-                                pageNumber += 1
-                                restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                if(pageNumber * numberOfDataInOnePage < restaurantTotal){
+                                    pageNumber += 1
+                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                } else {
+                                    Toast.makeText(
+                                        contextForToast,
+                                        contextForToast.getText(R.string.noNextPage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }) {
                                 Text(text = "next")
                             }
@@ -161,7 +171,10 @@ fun TourismWizApp() {
                                     selectedCity,
                                     pageNumber
                                 )
-                            }, searchText = searchText
+                            }, searchText = searchText,
+                            onTotalUpdated = { total ->
+                                restaurantTotal = total
+                            }
                         )
                     }
                 }
