@@ -14,13 +14,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 interface RestaurantRepository {
-    suspend fun getRestaurants(city: String): List<Restaurant>
+    suspend fun getRestaurants(city: String, pageNumber: Int): List<Restaurant>
 }
 class NetworkRestaurantRepository(private val restaurantApiService: RestaurantApiService): RestaurantRepository {
 
     var headers=mapOf("authorization" to "Bearer 123")
     private val clientID = BuildConfig.CLIENT_ID
     private val clientSecret = BuildConfig.CLIENT_SECRET
+    private val numberOfDataInOnePage = 1_000
 
     private fun getToken(){
         runBlocking {
@@ -50,10 +51,11 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
             }
         }
     }
-    override suspend fun getRestaurants(city:String): List<Restaurant>{
+    override suspend fun getRestaurants(city:String, pageNumber:Int): List<Restaurant>{
         getToken()
         delay(2000)
-        return restaurantApiService.getRestaurants(city, headers)
+        val skippedData = (pageNumber-1) * numberOfDataInOnePage
+        return restaurantApiService.getRestaurants(city, dataInPage = numberOfDataInOnePage, skippedData = skippedData, headers)
     }
 }
 

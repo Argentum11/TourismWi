@@ -21,7 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
-fun TourismWizApp(modifier: Modifier = Modifier) {
+fun TourismWizApp() {
     val selectedScreenIndex = remember { mutableStateOf(0) }
 
     Scaffold(
@@ -106,6 +106,7 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                     }
                     var searchText by remember { mutableStateOf("") }
                     var expanded by remember { mutableStateOf(false) }
+                    var pageNumber by remember { mutableStateOf(1) }
                     val contextForToast = LocalContext.current.applicationContext
                     Column {
                         CitySelector(
@@ -120,7 +121,7 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 expanded = false
-                                restaurantViewModel.getRestaurants(selectedCity)
+                                restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
                         )
                         TextField(
@@ -131,8 +132,35 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                                 .fillMaxWidth()
                                 .padding(8.dp)
                         )
+                        Button(onClick = {
+                            if (pageNumber >= 2) {
+                                pageNumber -= 1
+                                restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                            }
+                            else{
+                                Toast.makeText(
+                                    contextForToast,
+                                    contextForToast.getText(R.string.noPreviousPage),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }) {
+                            Text(text = "previous")
+                        }
+                        Button(onClick = {
+                            pageNumber += 1
+                            restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                        }) {
+                            Text(text = "next")
+                        }
                         RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
-                            retryAction = { restaurantViewModel.getRestaurants(selectedCity) }, searchText = searchText)
+                            retryAction = {
+                                restaurantViewModel.getRestaurants(
+                                    selectedCity,
+                                    pageNumber
+                                )
+                            }, searchText = searchText
+                        )
                     }
                 }
                 3 -> {

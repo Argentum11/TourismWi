@@ -28,4 +28,5 @@
     <string name="penghuCounty">Penghu County</string>
     <string name="lienchiangCounty">Lienchiang County</string>
     <string name="keyword">keyword</string>
+    <string name="noPreviousPage">already first page</string>
 </resources>

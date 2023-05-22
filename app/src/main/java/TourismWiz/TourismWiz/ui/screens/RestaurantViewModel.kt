@@ -29,14 +29,14 @@ class RestaurantViewModel(private val restaurantRepository:RestaurantRepository)
     private var reachableRestaurant: MutableSet<String> = mutableSetOf()
 
     init{
-        getRestaurants(City.defaultCity)
+        getRestaurants(City.defaultCity, 1)
     }
 
-    fun getRestaurants(city:String){
+    fun getRestaurants(city:String, pageNumber:Int){
         viewModelScope.launch {
             restaurantUiState = RestaurantUiState.Loading
             restaurantUiState = try {
-                RestaurantUiState.Success(restaurantRepository.getRestaurants(city))
+                RestaurantUiState.Success(restaurantRepository.getRestaurants(city, pageNumber))
             } catch (error: IOException){
                 RestaurantUiState.Error
             } catch (error: HttpException){
