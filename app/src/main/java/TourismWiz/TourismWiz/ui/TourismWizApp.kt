@@ -132,26 +132,28 @@ fun TourismWizApp() {
                                 .fillMaxWidth()
                                 .padding(8.dp)
                         )
-                        Button(onClick = {
-                            if (pageNumber >= 2) {
-                                pageNumber -= 1
+                        Row {
+                            Button(onClick = {
+                                if (pageNumber >= 2) {
+                                    pageNumber -= 1
+                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                } else {
+                                    Toast.makeText(
+                                        contextForToast,
+                                        contextForToast.getText(R.string.noPreviousPage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }) {
+                                Text(text = "previous")
+                            }
+                            Text(text = pageNumber.toString())
+                            Button(onClick = {
+                                pageNumber += 1
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                            }) {
+                                Text(text = "next")
                             }
-                            else{
-                                Toast.makeText(
-                                    contextForToast,
-                                    contextForToast.getText(R.string.noPreviousPage),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }) {
-                            Text(text = "previous")
-                        }
-                        Button(onClick = {
-                            pageNumber += 1
-                            restaurantViewModel.getRestaurants(selectedCity, pageNumber)
-                        }) {
-                            Text(text = "next")
                         }
                         RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
                             retryAction = {
