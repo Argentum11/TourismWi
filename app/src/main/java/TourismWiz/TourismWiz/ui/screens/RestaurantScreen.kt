@@ -2,12 +2,12 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -21,8 +21,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.ImageLoader.*
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import coil.size.Size
+import androidx.compose.foundation.lazy.grid.items
 
 @Composable
 fun RestaurantScreen(
@@ -72,21 +79,20 @@ fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Mod
     }
     val total = filteredRestaurants.size
     if(total == 0){
-        Text(text = "12313123")
+        ContentWithGifAndText()
     }
     else{
-//        onTotalUpdated(total)
-//        LazyVerticalGrid(
-//            columns = GridCells.Fixed(1),
-//            modifier = modifier.fillMaxWidth(),
-//            verticalArrangement = Arrangement.spacedBy(8.dp),
-//            contentPadding = PaddingValues(8.dp)
-//        ) {
-//            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-//                RestaurantCard(restaurant)
-//            }
-//        }
-        Text(text = "12313123")
+        onTotalUpdated(total)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+                RestaurantCard(restaurant)
+            }
+        }
     }
 }
 
@@ -157,5 +163,47 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun GifImage(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageLoader = Builder(context)
+        .components {
+            add(ImageDecoderDecoder.Factory())
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = R.drawable.cry).apply(block = {
+                size(Size.ORIGINAL)
+            }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+fun ContentWithGifAndText() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GifImage() // 在此处放置您的 GifImage 组件
+
+            Text(
+                text = "找不到資料",
+                style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp, color = Color.Black),
+                modifier = Modifier.padding(top = 8.dp) // 根据需要调整文本与图像之间的间距
+            )
+        }
+
     }
 }
