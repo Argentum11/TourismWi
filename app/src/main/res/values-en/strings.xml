@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">TourismWiz</string>
+    <string name="retry">Retry</string>
+    <string name="search_failed">Search failed</string>
+    <string name="error">error</string>
+    //city
+    <string name="city">City</string>
+    <string name="taipei">Taipei</string>
+    <string name="newTaipei">New Taipei</string>
+    <string name="taoyuan">Taoyuan City</string>
+    <string name="taichung">Taichung City</string>
+    <string name="tainan">Tainan City</string>
+    <string name="kaohsiung">Kaohsiung City</string>
+    <string name="keelung">Keelung City</string>
+    <string name="hsinchu">Hsinchu City</string>
+    <string name="hsinchuCounty">Hsinchu County</string>
+    <string name="miaoliCounty">Miaoli County</string>
+    <string name="changhuaCounty">Changhua County</string>
+    <string name="nantouCounty">Nantou County</string>
+    <string name="yunlinCounty">Yunlin County</string>
+    <string name="chiayiCounty">Chiayi County</string>
+    <string name="chiayi">Chiayi City</string>
+    <string name="pingtungCounty">Pingtung County</string>
+    <string name="yilanCounty">Yilan County</string>
+    <string name="hualienCounty">Hualien County</string>
+    <string name="taitungCounty">Taitung County</string>
+    <string name="kinmenCounty">Kinmen County</string>
+    <string name="penghuCounty">Penghu County</string>
+    <string name="lienchiangCounty">Lienchiang County</string>
+    <string name="keyword">keyword</string>
+    <string name="noPreviousPage">already first page</string>
+    <string name="noNextPage">already last page</string>
+</resources>

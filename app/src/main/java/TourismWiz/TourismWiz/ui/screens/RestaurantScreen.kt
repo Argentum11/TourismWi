@@ -24,17 +24,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-
 @Composable
 fun RestaurantScreen(
     restaurantUiState: RestaurantUiState,
     retryAction: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchText:String,
+    onTotalUpdated: (Int) -> Unit
 ) {
     when (restaurantUiState){
         is RestaurantUiState.Loading -> LoadingScreen(modifier)
         is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
-        is RestaurantUiState.Success -> RestaurantGridScreen(restaurants = restaurantUiState.restaurants, modifier)
+        is RestaurantUiState.Success -> RestaurantGridScreen(restaurants = restaurantUiState.restaurants, modifier, searchText, onTotalUpdated)
     }
 }
 
@@ -64,14 +65,20 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier){
 }
 
 @Composable
-fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Modifier) {
+fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Modifier, searchText: String, onTotalUpdated: (Int) -> Unit) {
+    val filteredRestaurants = restaurants.filter { restaurant ->
+        restaurant.RestaurantName.contains(searchText, ignoreCase = true)||
+                restaurant.Description.contains(searchText, ignoreCase = true)
+    }
+    val total = filteredRestaurants.size
+    onTotalUpdated(total)
     LazyVerticalGrid(
         columns = GridCells.Fixed(1),
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
-        items(items = restaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+        items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
             RestaurantCard(restaurant)
         }
     }
@@ -111,7 +118,7 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 } else {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(restaurant.Picture?.PictureUrl1)
+                            .data(restaurant.Picture.PictureUrl1)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Restaurant Image",

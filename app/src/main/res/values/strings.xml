@@ -2,4 +2,32 @@
     <string name="app_name">TourismWiz</string>
     <string name="retry">重新搜尋</string>
     <string name="search_failed">搜尋失敗</string>
+    <string name="error">error</string>
+    //city
+    <string name="city">城市</string>
+    <string name="taipei">臺北市</string>
+    <string name="newTaipei">新北市</string>
+    <string name="taoyuan">桃園市</string>
+    <string name="taichung">臺中市</string>
+    <string name="tainan">臺南市</string>
+    <string name="kaohsiung">高雄市</string>
+    <string name="keelung">基隆市</string>
+    <string name="hsinchu">新竹市</string>
+    <string name="hsinchuCounty">新竹縣</string>
+    <string name="miaoliCounty">苗栗縣</string>
+    <string name="changhuaCounty">彰化縣</string>
+    <string name="nantouCounty">南投縣</string>
+    <string name="yunlinCounty">雲林縣</string>
+    <string name="chiayiCounty">嘉義縣</string>
+    <string name="chiayi">嘉義市</string>
+    <string name="pingtungCounty">屏東縣</string>
+    <string name="yilanCounty">宜蘭縣</string>
+    <string name="hualienCounty">花蓮縣</string>
+    <string name="taitungCounty">臺東縣</string>
+    <string name="kinmenCounty">金門縣</string>
+    <string name="penghuCounty">澎湖縣</string>
+    <string name="lienchiangCounty">連江縣</string>
+    <string name="keyword">關鍵字</string>
+    <string name="noPreviousPage">已經是第1頁</string>
+    <string name="noNextPage">已經是最後1頁</string>
 </resources>

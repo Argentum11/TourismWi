@@ -1,23 +1,28 @@
 package TourismWiz.TourismWiz.ui
 
 import TourismWiz.TourismWiz.R
+import TourismWiz.TourismWiz.data.City
+import TourismWiz.TourismWiz.data.numberOfDataInOnePage
 import TourismWiz.TourismWiz.ui.screens.*
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
-fun TourismWizApp(modifier: Modifier = Modifier) {
+fun TourismWizApp() {
     val selectedScreenIndex = remember { mutableStateOf(0) }
 
     Scaffold(
@@ -97,13 +102,116 @@ fun TourismWizApp(modifier: Modifier = Modifier) {
                 2 -> {
                     val restaurantViewModel: RestaurantViewModel =
                         viewModel(factory = RestaurantViewModel.Factory)
-                    RestaurantScreen(
-                        restaurantUiState = restaurantViewModel.restaurantUiState,
-                        retryAction = restaurantViewModel::getRestaurants
-                    )
+                    var selectedCity by remember {
+                        mutableStateOf(City.defaultCity)
+                    }
+                    var searchText by remember { mutableStateOf("") }
+                    var expanded by remember { mutableStateOf(false) }
+                    var pageNumber by remember { mutableStateOf(1) }
+                    var restaurantTotal by remember { mutableStateOf(0) }
+                    val contextForToast = LocalContext.current.applicationContext
+                    Column {
+                        CitySelector(
+                            expanded = expanded,
+                            onExpandedChange = { isExpanded -> expanded = isExpanded },
+                            selectedCity = selectedCity,
+                            onCitySelected = { city ->
+                                selectedCity = city
+                                Toast.makeText(
+                                    contextForToast,
+                                    contextForToast.getText(City.getStringId(city)),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                expanded = false
+                                restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                            }
+                        )
+                        TextField(
+                            value = searchText,
+                            onValueChange = { newValue -> searchText = newValue },
+                            label = { Text(stringResource(R.string.keyword)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                        Row {
+                            Button(onClick = {
+                                if (pageNumber >= 2) {
+                                    pageNumber -= 1
+                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                } else {
+                                    Toast.makeText(
+                                        contextForToast,
+                                        contextForToast.getText(R.string.noPreviousPage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }) {
+                                Text(text = "previous")
+                            }
+                            Text(text = pageNumber.toString())
+                            Button(onClick = {
+                                if(pageNumber * numberOfDataInOnePage < restaurantTotal){
+                                    pageNumber += 1
+                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                } else {
+                                    Toast.makeText(
+                                        contextForToast,
+                                        contextForToast.getText(R.string.noNextPage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }) {
+                                Text(text = "next")
+                            }
+                        }
+                        RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
+                            retryAction = {
+                                restaurantViewModel.getRestaurants(
+                                    selectedCity,
+                                    pageNumber
+                                )
+                            }, searchText = searchText,
+                            onTotalUpdated = { total ->
+                                restaurantTotal = total
+                            }
+                        )
+                    }
                 }
                 3 -> {
                     // TODO user page
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CitySelector(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    selectedCity: String,
+    onCitySelected: (String) -> Unit
+) {
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
+        TextField(
+            stringResource(id = City.getStringId(selectedCity)),
+            {},
+            readOnly = true,
+            label = { Text(text = stringResource(id = R.string.city)) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
+            val citiesForRestaurant = City.cities.filterNot { it == City.taipei }
+
+            citiesForRestaurant.forEach { selectedOption ->
+                DropdownMenuItem(onClick = {
+                    onCitySelected(selectedOption)
+                }) {
+                    Text(text = stringResource(id = City.getStringId(selectedOption)))
                 }
             }
         }
