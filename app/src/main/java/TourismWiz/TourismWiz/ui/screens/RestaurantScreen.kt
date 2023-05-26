@@ -71,16 +71,22 @@ fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Mod
                 restaurant.Description.contains(searchText, ignoreCase = true)
     }
     val total = filteredRestaurants.size
-    onTotalUpdated(total)
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-            RestaurantCard(restaurant)
-        }
+    if(total == 0){
+        Text(text = "12313123")
+    }
+    else{
+//        onTotalUpdated(total)
+//        LazyVerticalGrid(
+//            columns = GridCells.Fixed(1),
+//            modifier = modifier.fillMaxWidth(),
+//            verticalArrangement = Arrangement.spacedBy(8.dp),
+//            contentPadding = PaddingValues(8.dp)
+//        ) {
+//            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+//                RestaurantCard(restaurant)
+//            }
+//        }
+        Text(text = "12313123")
     }
 }
 
@@ -113,7 +119,9 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.noimage),
                         contentDescription = "No Image",
-                        modifier = Modifier.fillMaxWidth().height(200.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     )
                 } else {
                     AsyncImage(
@@ -123,7 +131,9 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                             .build(),
                         contentDescription = "Restaurant Image",
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().height(200.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     )
                 }
 
