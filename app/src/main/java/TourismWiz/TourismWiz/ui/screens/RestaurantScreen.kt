@@ -84,6 +84,32 @@ fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Mod
     }
 }
 
+@Composable
+fun DisplayImage(imageUrl: String?) {
+    if (imageUrl == null) {
+        Image(
+            painter = painterResource(id = R.drawable.noimage),
+            contentDescription = "No Image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        )
+    } else {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Restaurant Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        )
+    }
+}
+
+
 
 @Composable
 fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
@@ -108,26 +134,7 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                     .padding(16.dp)
                     .background(Color.White)
             ) {
-
-                if (restaurant.Picture?.PictureUrl1 == null) {
-                    Image(
-                        painter = painterResource(id = R.drawable.noimage),
-                        contentDescription = "No Image",
-                        modifier = Modifier.fillMaxWidth().height(200.dp)
-                    )
-                } else {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(restaurant.Picture.PictureUrl1)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Restaurant Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().height(200.dp)
-                    )
-                }
-
-
+                DisplayImage (restaurant.Picture?.PictureUrl1)
                 Text(
                     text = restaurant.RestaurantName,
                     style = MaterialTheme.typography.h5,
@@ -147,5 +154,16 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun RestaurantDetails(restaurant: Restaurant){
+    Column {
+        DisplayImage (restaurant.Picture?.PictureUrl1)
+        Text(text = restaurant.RestaurantName)
+        Text(text = restaurant.Address)
+        Text(text = restaurant.Phone)
+        Text(text = restaurant.Description)
     }
 }
