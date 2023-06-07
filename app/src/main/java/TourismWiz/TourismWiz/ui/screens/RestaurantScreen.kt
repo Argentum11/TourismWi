@@ -92,15 +92,15 @@ fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Mod
 
 @Composable
 fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
-    val LightBlue = Color(0xFFB2EBF2)
-    val DarkBlue = Color(0xFF00008B)
+    val lightBlue = Color(0xFFB2EBF2)
+    val darkBlue = Color(0xFF00008B)
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(1f),
         elevation = 8.dp,
-        backgroundColor = LightBlue,
+        backgroundColor = lightBlue,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -142,7 +142,7 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                     style = MaterialTheme.typography.h5,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
-                    color = DarkBlue
+                    color = darkBlue
                 )
 
                 Text(
