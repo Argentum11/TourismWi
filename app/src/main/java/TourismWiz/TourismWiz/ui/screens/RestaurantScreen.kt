@@ -2,7 +2,6 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
-import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,14 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.ImageLoader.*
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-import coil.size.Size
 import androidx.compose.foundation.lazy.grid.items
 
 @Composable
@@ -79,7 +72,7 @@ fun RestaurantGridScreen(restaurants: List<Restaurant>, modifier: Modifier = Mod
     }
     val total = filteredRestaurants.size
     if(total == 0){
-        ContentWithGifAndText()
+        NoResult()
     }
     else{
         onTotalUpdated(total)
@@ -159,51 +152,9 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
                     style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth(),
-                    color = Color.DarkGray
+                    color = MaterialTheme.colors.secondary
                 )
             }
         }
-    }
-}
-
-@Composable
-fun GifImage(
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    val imageLoader = Builder(context)
-        .components {
-            add(ImageDecoderDecoder.Factory())
-        }
-        .build()
-    Image(
-        painter = rememberAsyncImagePainter(
-            ImageRequest.Builder(context).data(data = R.drawable.cry).apply(block = {
-                size(Size.ORIGINAL)
-            }).build(), imageLoader = imageLoader
-        ),
-        contentDescription = null,
-        modifier = modifier.fillMaxWidth(),
-    )
-}
-
-@Composable
-fun ContentWithGifAndText() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            GifImage() // 在此处放置您的 GifImage 组件
-
-            Text(
-                text = "找不到資料",
-                style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp, color = Color.Black),
-                modifier = Modifier.padding(top = 8.dp) // 根据需要调整文本与图像之间的间距
-            )
-        }
-
     }
 }
