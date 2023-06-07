@@ -119,7 +119,7 @@ fun RestaurantGridScreen(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-                RestaurantCard(restaurant)
+                RestaurantCard(restaurant, onItemClick = onItemClick)
             }
         }
     }
