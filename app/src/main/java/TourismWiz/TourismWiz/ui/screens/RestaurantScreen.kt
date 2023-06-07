@@ -2,6 +2,8 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +28,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -201,26 +212,151 @@ fun RestaurantCard(
 
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
-    LazyColumn {
+
+    val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
+
+
+    val context = LocalContext.current
+
+    val phoneNumberClick: () -> Unit = {
+        val phoneUri = "tel:${phoneNumber}"
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(phoneUri))
+        context.startActivity(intent)
+    }
+
+    val addressClick: () -> Unit = {
+        val mapUri = Uri.parse("geo:0,0?q=${restaurant.Address}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+        mapIntent.setPackage("com.google.android.apps.maps") // 指定使用 Google 地图应用
+        context.startActivity(mapIntent)
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         item {
-            DisplayImage(restaurant.Picture?.PictureUrl1)
+           
+            DisplayImage(imageUrl = restaurant.Picture?.PictureUrl1)
+
+            Text(
+                text = restaurant.RestaurantName,
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Cyan
+            )
+
         }
+
+        item{
+            Text(
+                text = restaurant.Description,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            )
+        }
+
+
         item {
-            Row {
-                Button(onClick = { /*TODO*/ Log.e("dfsdf","save") }) {
-                    Text(text = "save")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    text = "相關資訊 : ",
+                    fontSize = 16.sp
+                )
+
+                Row(
+                    modifier = Modifier.clickable(onClick = addressClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.maps),
+                        contentDescription = "Image",
+                        modifier = Modifier.size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    if(restaurant.Address.length > 20)
+                    {
+                        Text(
+                            text = restaurant.Address,
+                            fontSize = 16.sp
+                        )
+                    }
+                    else
+                    {
+                        Text(
+                            text = restaurant.Address,
+                            fontSize = 24.sp
+                        )
+                    }
                 }
+
+
+                Row(
+                    modifier = Modifier.clickable(onClick = phoneNumberClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.call),
+                        contentDescription = "Image",
+                        modifier = Modifier.size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text(
+                        text = phoneNumber,
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row( modifier = Modifier.padding(top = 20.dp)
+                    .fillMaxWidth(),){
+                    Image(
+                        painter = painterResource(R.drawable.open),
+                        contentDescription = "Image",
+                        modifier = Modifier.size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    if(restaurant.OpenTime != null){
+                        Text(
+                            text = restaurant.OpenTime,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+
             }
-            Text(text = restaurant.RestaurantName)
         }
+
         item {
-            Text(text = restaurant.Address)
-        }
-        item {
-            Text(text = restaurant.Phone)
-        }
-        item {
-            Text(text = restaurant.Description)
+            Text(
+                text = "資料更新日 : " + restaurant.UpdateTime,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                color = Color.Black
+            )
         }
     }
 }
+
