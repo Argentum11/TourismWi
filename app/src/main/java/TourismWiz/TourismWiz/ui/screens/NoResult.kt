@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +28,8 @@ fun NoResult(){
             Text(
                 text = "找不到資料",
                 style = TextStyle(fontSize = 20.sp, color = Color.Black),
-                modifier = Modifier.padding(top = 8.dp) // 根据需要调整文本与图像之间的间距
+                modifier = Modifier.padding(top = 8.dp), // 根据需要调整文本与图像之间的间距
+            color = MaterialTheme.colors.secondary
             )
         }
 
