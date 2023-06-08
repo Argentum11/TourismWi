@@ -2,6 +2,9 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
+import TourismWiz.TourismWiz.data.FireBase
+import TourismWiz.TourismWiz.data.MyUser
+import TourismWiz.TourismWiz.ui.LoginScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +34,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import androidx.compose.foundation.lazy.grid.items
 
+
 @Composable
 fun RestaurantScreen(
     restaurantUiState: RestaurantUiState,
@@ -40,29 +44,76 @@ fun RestaurantScreen(
     onTotalUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
+    var res_list :List<Restaurant> = emptyList()
+    var fav_list by remember { mutableStateOf(mutableListOf<Restaurant>()) }
     var selectedRestaurantId by remember { mutableStateOf("") }
-    when (restaurantUiState) {
-        is RestaurantUiState.Loading -> LoadingScreen(modifier)
-        is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
-        is RestaurantUiState.Success -> {
-            NavHost(navController = navController, startDestination = "restaurantGrid") {
-                composable("restaurantGrid") {
-                    RestaurantGridScreen(
-                        restaurants = restaurantUiState.restaurants,
-                        searchText = searchText,
-                        onTotalUpdated = onTotalUpdated,
-                        onItemClick = { restaurant ->
-                            selectedRestaurantId = restaurant.RestaurantID
-                            navController.navigate("restaurantDetail")
+    var isLoginDialogVisible by remember { mutableStateOf(false) }
+    var isShow by remember { mutableStateOf(false)}
+
+    when (isShow){
+        true ->{
+            when (restaurantUiState) {
+                is RestaurantUiState.Loading -> LoadingScreen(modifier)
+                is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
+                is RestaurantUiState.Success -> {
+                    LoginScreen(field = "Restaurant", myItem = null, saveList = {
+                        fav_list = it
+                        isShow = isShow==false
+                    })
+                    res_list=fav_list
+                    Log.d("FireBaseRelated","true out "+ res_list.toString())
+                    NavHost(navController = navController, startDestination = "restaurantGrid") {
+                        composable("restaurantGrid") {
+                            RestaurantGridScreen(
+                                restaurants = fav_list,
+                                searchText = searchText,
+                                onTotalUpdated = onTotalUpdated,
+                                onItemClick = { restaurant ->
+                                    MyUser.user?.email?.let { FireBase.addFavorite<Restaurant>(it,"Restaurant",restaurant as Restaurant) }
+                                    selectedRestaurantId = restaurant.RestaurantID
+                                    navController.navigate("restaurantDetail")
+                                }
+                            )
                         }
-
-                    )
+                        composable("restaurantDetail") {
+                            val restaurant =
+                                restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
+                            restaurant?.let { RestaurantDetailScreen(restaurant = it) }
+                        }
+                    }
                 }
-                composable("restaurantDetail") {
-
-                    val restaurant =
-                        restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
-                    restaurant?.let { RestaurantDetailScreen(restaurant = it) }
+            }
+        }
+        false ->{
+            when (restaurantUiState) {
+                is RestaurantUiState.Loading -> LoadingScreen(modifier)
+                is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
+                is RestaurantUiState.Success -> {
+                    LoginScreen(field = "Restaurant", myItem = null, saveList = {
+                        fav_list=it
+                        isShow = isShow==false
+                    })
+                    fav_list= restaurantUiState.restaurants as MutableList<Restaurant>
+                    Log.d("FireBaseRelated","false out "+ res_list.toString())
+                    NavHost(navController = navController, startDestination = "restaurantGrid") {
+                        composable("restaurantGrid") {
+                            RestaurantGridScreen(
+                                restaurants = fav_list,
+                                searchText = searchText,
+                                onTotalUpdated = onTotalUpdated,
+                                onItemClick = { restaurant ->
+                                    MyUser.user?.email?.let { FireBase.addFavorite<Restaurant>(it,"Restaurant",restaurant as Restaurant) }
+                                    selectedRestaurantId = restaurant.RestaurantID
+                                    navController.navigate("restaurantDetail")
+                                }
+                            )
+                        }
+                        composable("restaurantDetail") {
+                            val restaurant =
+                                restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
+                            restaurant?.let { RestaurantDetailScreen(restaurant = it) }
+                        }
+                    }
                 }
             }
         }
@@ -108,7 +159,7 @@ fun RestaurantGridScreen(
     }
     val total = filteredRestaurants.size
     if(total == 0){
-        NoResult()
+        //NoResult()
     }
     else{
         onTotalUpdated(total)

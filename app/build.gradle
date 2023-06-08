@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
+    id 'com.google.gms.google-services'
+
 }
 
 def localPropertiesFile = rootProject.file("local.properties")
@@ -63,6 +65,12 @@ android {
 }
 
 dependencies {
+    //firebase stuff
+    implementation platform('com.google.firebase:firebase-bom:31.4.0')
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     implementation "io.coil-kt:coil-compose:2.1.0"
     implementation 'androidx.core:core-ktx:1.7.0'
