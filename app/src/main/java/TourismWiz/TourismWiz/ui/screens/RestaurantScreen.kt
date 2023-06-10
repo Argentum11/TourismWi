@@ -250,18 +250,6 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
 
         }
 
-        item{
-            Text(
-                text = restaurant.Description,
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .background(Color(0xFFE0E0E0))
-                    .padding(16.dp)
-            )
-        }
-
 
         item {
             Column(
@@ -275,11 +263,13 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
 
                 Text(
                     text = "相關資訊 : ",
-                    fontSize = 16.sp
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Row(
-                    modifier = Modifier.clickable(onClick = addressClick)
+                    modifier = Modifier
+                        .clickable(onClick = addressClick)
                         .fillMaxWidth()
                         .padding(top = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -287,7 +277,8 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                     Image(
                         painter = painterResource(R.drawable.maps),
                         contentDescription = "Image",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(40.dp)
                             .padding(end = 8.dp)
                     )
                     if(restaurant.Address.length > 20)
@@ -308,14 +299,16 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
 
 
                 Row(
-                    modifier = Modifier.clickable(onClick = phoneNumberClick)
+                    modifier = Modifier
+                        .clickable(onClick = phoneNumberClick)
                         .fillMaxWidth()
                         .padding(top = 20.dp),
                 ) {
                     Image(
                         painter = painterResource(R.drawable.call),
                         contentDescription = "Image",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(40.dp)
                             .padding(end = 8.dp)
                     )
                     Text(
@@ -324,12 +317,14 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                     )
                 }
 
-                Row( modifier = Modifier.padding(top = 20.dp)
+                Row( modifier = Modifier
+                    .padding(top = 20.dp)
                     .fillMaxWidth(),){
                     Image(
                         painter = painterResource(R.drawable.open),
                         contentDescription = "Image",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(40.dp)
                             .padding(end = 8.dp)
                     )
                     if(restaurant.OpenTime != null){
@@ -341,6 +336,33 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 }
 
             }
+        }
+
+        item{
+
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 16.dp)
+                .background(Color(0xFFE0E0E0))
+                .padding(16.dp)) {
+                Text(
+                    text = "詳細介紹 : ",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = restaurant.Description,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .background(Color(0xFFE0E0E0))
+                        .padding(16.dp)
+                )
+            }
+
         }
 
         item {
