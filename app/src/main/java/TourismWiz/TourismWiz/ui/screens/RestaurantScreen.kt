@@ -2,8 +2,8 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
-import android.util.Log
-import androidx.compose.foundation.Image
+import TourismWiz.TourismWiz.data.darkBlue
+import TourismWiz.TourismWiz.data.lightBlue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,9 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,8 +24,6 @@ import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import androidx.compose.foundation.lazy.grid.items
 
 @Composable
@@ -125,30 +120,7 @@ fun RestaurantGridScreen(
     }
 }
 
-@Composable
-fun DisplayImage(imageUrl: String?) {
-    if (imageUrl == null) {
-        Image(
-            painter = painterResource(id = R.drawable.noimage),
-            contentDescription = "No Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
-    } else {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = "Restaurant Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
-    }
-}
+
 
 
 @Composable
@@ -157,8 +129,6 @@ fun RestaurantCard(
     modifier: Modifier = Modifier,
     onItemClick: (Restaurant) -> Unit
 ) {
-    val lightBlue = Color(0xFFB2EBF2)
-    val darkBlue = Color(0xFF00008B)
     Card(
         modifier = modifier
             .padding(4.dp)
@@ -210,7 +180,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
         }
         item {
             Row {
-                Button(onClick = { /*TODO*/ Log.e("dfsdf","save") }) {
+                Button(onClick = { /*TODO*/  }) {
                     Text(text = "save")
                 }
             }
