@@ -158,7 +158,7 @@ fun RestaurantGridScreen(
     }
     val total = filteredRestaurants.size
     if(total == 0){
-        //NoResult()
+        NoResult()
     }
     else{
         onTotalUpdated(total)
