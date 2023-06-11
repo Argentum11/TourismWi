@@ -1,8 +1,9 @@
-package TourismWiz.TourismWiz.ui
+package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.FireBase
 import TourismWiz.TourismWiz.data.FireBase.Companion.gson
+import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.data.MyUser.Companion.user
 import TourismWiz.TourismWiz.model.Restaurant
 import android.util.Log
@@ -33,7 +34,7 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    Column() {
+    Column {
         IconButton(
                 onClick = {
                     if (user!=null) {

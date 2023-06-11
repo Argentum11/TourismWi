@@ -4,7 +4,6 @@ import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.FireBase
 import TourismWiz.TourismWiz.data.MyUser
-import TourismWiz.TourismWiz.ui.LoginScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

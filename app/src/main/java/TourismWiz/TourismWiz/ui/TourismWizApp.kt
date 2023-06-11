@@ -92,12 +92,15 @@ fun TourismWizApp() {
                     )
                 }
                 1 -> {
+                    /*
                     val scenicSpotViewModel: ScenicSpotViewModel =
                         viewModel(factory = ScenicSpotViewModel.Factory)
                     ScenicSpotScreen(
                         scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
                         retryAction = scenicSpotViewModel::getScenicSpots
                     )
+                    */
+                    ChangeName()
                 }
                 2 -> {
                     val restaurantViewModel: RestaurantViewModel =
@@ -179,7 +182,7 @@ fun TourismWizApp() {
                     }
                 }
                 3 -> {
-                    // TODO user page
+                    ChangeName()
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -62,6 +63,7 @@ class FireBase {
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", "loginUserWithEmail:success")
+                    MyUser.password=password
                 } else {
                     Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", task.exception?.localizedMessage!!)
@@ -148,7 +150,7 @@ class FireBase {
                     if (flag)
                         addData(email, input)
                     //else
-                    //Toast.makeText(context, "is already in your favorite !", Toast.LENGTH_SHORT).show()
+                     //   Toast.makeText(context, "is already in your favorite !", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -161,5 +163,30 @@ class FireBase {
                 }
             }
         }
+        public fun changeName(name:String,context:Context){
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+            MyUser.user?.updateProfile(profileUpdates)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(context, "change name successful!", Toast.LENGTH_SHORT).show()
+                        MyUser.user!!.email?.let { MyUser.password?.let { it1 ->
+                            loginAccount(it,it1,context)?.addOnCompleteListener{ task ->
+                                if (task.isSuccessful) {
+                                    MyUser.user = task.result
+                                } else {
+                                    Toast.makeText(context, "something wrong, try again later!", Toast.LENGTH_SHORT).show()
+
+                                    MyUser.user = null
+                                }
+                            }
+                        } }
+                    } else {
+                        Toast.makeText(context, "change name fail! please try again later", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+
     }
 }
