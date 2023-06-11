@@ -32,4 +32,5 @@
     <string name="noNextPage">already last page</string>
     <string name="no_result">No result !</string>
     <string name="default_hotel_description">A normal hotel</string>
+    <string name="default_scenicspot_description">A normal scenic spot</string>
 </resources>
