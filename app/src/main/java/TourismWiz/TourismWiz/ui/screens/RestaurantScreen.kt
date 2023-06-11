@@ -149,7 +149,7 @@ fun RestaurantCard(
                     .padding(16.dp)
                     .background(Color.White)
             ) {
-                DisplayImage(restaurant.Picture?.PictureUrl1)
+                ImageDisplay(restaurant.Picture?.PictureUrl1)
                 Text(
                     text = restaurant.RestaurantName,
                     style = MaterialTheme.typography.h5,
@@ -176,7 +176,7 @@ fun RestaurantCard(
 fun RestaurantDetailScreen(restaurant: Restaurant) {
     LazyColumn {
         item {
-            DisplayImage(restaurant.Picture?.PictureUrl1)
+            ImageDisplay(restaurant.Picture?.PictureUrl1)
         }
         item {
             Row {

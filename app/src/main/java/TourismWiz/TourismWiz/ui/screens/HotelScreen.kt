@@ -74,7 +74,7 @@ fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier
                     .padding(16.dp)
                     .background(Color.White)
             ) {
-                DisplayImage(hotel.Picture.PictureUrl1)
+                ImageDisplay(hotel.Picture.PictureUrl1)
                 Text(
                     text = hotel.HotelName,
                     style = MaterialTheme.typography.h5,

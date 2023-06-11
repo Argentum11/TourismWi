@@ -14,7 +14,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun DisplayImage(imageUrl: String?) {
+fun ImageDisplay(imageUrl: String?) {
     if (imageUrl == null) {
         Image(
             painter = painterResource(id = R.drawable.noimage),
