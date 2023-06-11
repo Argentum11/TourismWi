@@ -65,7 +65,7 @@ class FireBase {
                     Log.d("FireBaseRelated", "loginUserWithEmail:success")
                     MyUser.password=password
                 } else {
-                    Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "User not found or password mismatch", Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", task.exception?.localizedMessage!!)
                 }
             }
@@ -177,7 +177,6 @@ class FireBase {
                                     MyUser.user = task.result
                                 } else {
                                     Toast.makeText(context, "something wrong, try again later!", Toast.LENGTH_SHORT).show()
-
                                     MyUser.user = null
                                 }
                             }

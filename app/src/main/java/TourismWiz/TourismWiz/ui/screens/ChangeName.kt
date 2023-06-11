@@ -55,7 +55,7 @@ fun ChangeName() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "名字 : $displayName")
+            Text(text = "名字 : "+ displayName ?: "")
             Text(text = "帳號 : $displayEmail")
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {  isChange = true }) {
@@ -198,7 +198,7 @@ fun ChangeName() {
                                                 if(user!=null) {
                                                     isLoginDialogVisible = false
                                                     isLoggedIn=true
-                                                    displayName=user?.displayName!!
+                                                    displayName=user?.displayName ?: ""
                                                     displayEmail=user?.email!!
                                                 }
                                             } else {
@@ -226,7 +226,7 @@ fun ChangeName() {
                                             if(user!=null) {
                                                 isLoginDialogVisible = false
                                                 isLoggedIn=true
-                                                displayName=user?.displayName!!
+                                                displayName=user?.displayName ?: ""
                                                 displayEmail=user?.email!!
                                             }
                                         }
