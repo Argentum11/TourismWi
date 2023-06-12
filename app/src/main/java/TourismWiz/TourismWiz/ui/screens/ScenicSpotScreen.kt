@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,14 +37,46 @@ fun ScenicSpotScreen(
 
 @Composable
 fun ScenicSpotGridScreen(scenicSpots: List<ScenicSpot>, modifier: Modifier  = Modifier){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(items = scenicSpots, key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
-            ScenicSpotCard(scenicSpot)
+    val filteredScenicSpots = remember { mutableStateListOf<ScenicSpot>() }
+    var searchQuery by remember { mutableStateOf("") }
+    Column(modifier = modifier.fillMaxWidth()) {
+        TextField(
+            value = searchQuery,
+            onValueChange = { query -> searchQuery = query },
+            label = { Text(stringResource(id = R.string.keyword)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { searchQuery = "" }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Clear",
+                            tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                        )
+                    }
+                }
+            }
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            filteredScenicSpots.clear()
+            filteredScenicSpots.addAll(
+                scenicSpots.filter { scenicSpot ->
+                    scenicSpot.ScenicSpotName.contains(searchQuery, ignoreCase = true) ||
+                            scenicSpot.Description?.contains(searchQuery, ignoreCase = true) == true
+                }
+            )
+            items(
+                items = filteredScenicSpots,
+                key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
+                ScenicSpotCard(scenicSpot)
+            }
         }
     }
 }
