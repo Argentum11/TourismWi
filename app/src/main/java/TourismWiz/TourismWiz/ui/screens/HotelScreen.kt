@@ -10,10 +10,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,14 +41,45 @@ fun HotelScreen(
 
 @Composable
 fun HotelGridScreen(hotels: List<Hotel>, modifier: Modifier  = Modifier){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(items = hotels, key = { hotel -> hotel.HotelID }) { hotel ->
-            HotelCard(hotel)
+    val filteredHotels = remember { mutableStateListOf<Hotel>() }
+    var searchQuery by remember { mutableStateOf("") }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        TextField(
+            value = searchQuery,
+            onValueChange = { query -> searchQuery = query },
+            label = { Text(stringResource(id = R.string.keyword)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { searchQuery = "" }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Clear",
+                            tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                        )
+                    }
+                }
+            }
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            filteredHotels.clear()
+            filteredHotels.addAll(
+                hotels.filter { hotel ->
+                    hotel.HotelName.contains(searchQuery, ignoreCase = true) ||
+                            hotel.Description?.contains(searchQuery, ignoreCase = true) == true
+                }
+            )
+            items(items = filteredHotels, key = { hotel -> hotel.HotelID }) { hotel ->
+                HotelCard(hotel)
+            }
         }
     }
 }
