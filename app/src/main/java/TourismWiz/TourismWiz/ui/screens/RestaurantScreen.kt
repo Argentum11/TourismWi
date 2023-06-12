@@ -2,8 +2,11 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
+import android.content.Intent
+import android.net.Uri
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,10 +24,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 
 @Composable
 fun RestaurantScreen(
@@ -185,26 +193,142 @@ fun RestaurantCard(
 
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
-    LazyColumn {
+    val context = LocalContext.current
+    val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
+    val phoneNumberClick: () -> Unit = {
+        val phoneUri = "tel:${phoneNumber}"
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(phoneUri))
+        context.startActivity(intent)
+    }
+    val addressClick: () -> Unit = {
+        val mapUri = Uri.parse("geo:0,0?q=${restaurant.Address}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+        mapIntent.setPackage("com.google.android.apps.maps") // 指定使用 Google 地图应用
+        context.startActivity(mapIntent)
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         item {
             ImageDisplay(restaurant.Picture?.PictureUrl1)
         }
+
         item {
-            Row {
-                Button(onClick = { /*TODO*/  }) {
-                    Text(text = "save")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    text = stringResource(R.string.related_info)+" : ",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = addressClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.maps),
+                        contentDescription = "Location icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    val fontSize = if (restaurant.Address.length > 20) 16.sp else 24.sp
+                    Text(
+                        text = restaurant.Address,
+                        fontSize = fontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = phoneNumberClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.call),
+                        contentDescription = "Phone icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text(
+                        text = phoneNumber,
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row( modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth(),){
+                    Image(
+                        painter = painterResource(R.drawable.open),
+                        contentDescription = "Open sign icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    if(restaurant.OpenTime != null){
+                        Text(
+                            text = restaurant.OpenTime,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
-            Text(text = restaurant.RestaurantName)
         }
-        item {
-            Text(text = restaurant.Address)
+
+        item{
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 16.dp)
+                .background(Color(0xFFE0E0E0))
+                .padding(16.dp)) {
+
+                Text(
+                    text = stringResource(R.string.detailed_description)+ " : " ,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = restaurant.Description,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .background(Color(0xFFE0E0E0))
+                        .padding(16.dp)
+                )
+            }
         }
+
         item {
-            Text(text = restaurant.Phone)
-        }
-        item {
-            Text(text = restaurant.Description)
+            Text(
+                text = stringResource(R.string.data_update_date) + " : " + restaurant.UpdateTime,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                color = Color.Black
+            )
         }
     }
 }

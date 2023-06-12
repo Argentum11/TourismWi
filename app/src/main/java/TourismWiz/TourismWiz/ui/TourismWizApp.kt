@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -109,7 +110,7 @@ fun TourismWizApp() {
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
                     val contextForToast = LocalContext.current.applicationContext
-                    Column {
+                    Column{
                         CitySelector(
                             expanded = expanded,
                             onExpandedChange = { isExpanded -> expanded = isExpanded },
@@ -125,7 +126,7 @@ fun TourismWizApp() {
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
                         )
-
+                        
                         Row {
                             Button(onClick = {
                                 if (pageNumber >= 2) {
@@ -141,20 +142,29 @@ fun TourismWizApp() {
                             }) {
                                 Text(text = "previous")
                             }
-                            Text(text = pageNumber.toString())
-                            Button(onClick = {
-                                if(pageNumber * numberOfDataInOnePage < restaurantTotal){
-                                    pageNumber += 1
-                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
-                                } else {
-                                    Toast.makeText(
-                                        contextForToast,
-                                        contextForToast.getText(R.string.noNextPage),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }) {
-                                Text(text = "next")
+
+                            Text(
+                                text = pageNumber.toString(),
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Button(
+                                onClick = {
+                                    if(pageNumber * numberOfDataInOnePage < restaurantTotal){
+                                        pageNumber += 1
+                                        restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                    } else {
+                                        Toast.makeText(
+                                            contextForToast,
+                                            contextForToast.getText(R.string.noNextPage),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(text = ">>")
                             }
                         }
                         RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,

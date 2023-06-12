@@ -31,6 +31,9 @@
     <string name="noPreviousPage">already first page</string>
     <string name="noNextPage">already last page</string>
     <string name="no_result">No result !</string>
+    <string name="related_info">Related info</string>
+    <string name="detailed_description">Description</string>
+    <string name="data_update_date">Updated date</string>
     <string name="default_hotel_description">A normal hotel</string>
     <string name="default_scenicspot_description">A normal scenic spot</string>
 </resources>
