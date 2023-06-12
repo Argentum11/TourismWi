@@ -113,6 +113,16 @@ class FireBase {
                     }
             }
         }
+        //,constrain:Pair<String,String>
+        private fun deleteData(field: String,id:String) {
+            db.collection(field).document(id).delete()
+                .addOnSuccessListener {
+                    Log.d("FireBaseRelated", "deleteDataWithField:$field,id:$id:success")
+                }
+                .addOnFailureListener { e ->
+                    Log.d("FireBaseRelated", "deleteDataWithField:$field,id:$id:fail")
+                }
+        }
         public fun addComment(name:String,comment:String){
             val input = hashMapOf(
                 "name" to name,
@@ -137,6 +147,7 @@ class FireBase {
             MyUser.user?.email?.let {
                 getFavorite(it, field) { result ->
                     var flag=true
+                    var id:String?=null
                     for (i in result) {
                         val r: Restaurant = gson.fromJson(
                             i.get("item").toString(),
@@ -144,13 +155,15 @@ class FireBase {
                         )
                         if (r == item) {
                             flag = false
+                            id=i.id
                             break
                         }
                     }
                     if (flag)
                         addData(email, input)
-                    //else
-                     //   Toast.makeText(context, "is already in your favorite !", Toast.LENGTH_SHORT).show()
+                    else
+                        deleteData(email,id!!)
+
                 }
             }
         }
