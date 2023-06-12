@@ -246,7 +246,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             ) {
 
                 Text(
-                    text = "相關資訊 : ",
+                    text = stringResource(R.string.related_info)+" : ",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -264,13 +264,11 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                             .size(40.dp)
                             .padding(end = 8.dp)
                     )
-
                     val fontSize = if (restaurant.Address.length > 20) 16.sp else 24.sp
                     Text(
                         text = restaurant.Address,
                         fontSize = fontSize
                     )
-
                 }
 
                 Row(
@@ -321,7 +319,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 .padding(16.dp)) {
 
                 Text(
-                    text = "詳細介紹 : ",
+                    text = stringResource(R.string.detailed_description)+ " : " ,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -339,7 +337,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
 
         item {
             Text(
-                text = "資料更新日 : " + restaurant.UpdateTime,
+                text = stringResource(R.string.data_update_date) + " : " + restaurant.UpdateTime,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier

@@ -30,4 +30,7 @@
     <string name="keyword">關鍵字</string>
     <string name="noPreviousPage">已經是第1頁</string>
     <string name="noNextPage">已經是最後1頁</string>
+    <string name="related_info">相關資訊</string>
+    <string name="detailed_description">詳細介紹</string>
+    <string name="data_update_date">資料更新日</string>
 </resources>
