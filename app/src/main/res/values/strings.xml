@@ -30,4 +30,5 @@
     <string name="keyword">關鍵字</string>
     <string name="noPreviousPage">已經是第1頁</string>
     <string name="noNextPage">已經是最後1頁</string>
+    <string name="no_result">找不到資料 !</string>
 </resources>
