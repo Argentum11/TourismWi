@@ -31,7 +31,6 @@ fun RestaurantScreen(
     restaurantUiState: RestaurantUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    searchText: String,
     onTotalUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
@@ -44,17 +43,14 @@ fun RestaurantScreen(
                 composable("restaurantGrid") {
                     RestaurantGridScreen(
                         restaurants = restaurantUiState.restaurants,
-                        searchText = searchText,
                         onTotalUpdated = onTotalUpdated,
                         onItemClick = { restaurant ->
                             selectedRestaurantId = restaurant.RestaurantID
                             navController.navigate("restaurantDetail")
                         }
-
                     )
                 }
                 composable("restaurantDetail") {
-
                     val restaurant =
                         restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
                     restaurant?.let { RestaurantDetailScreen(restaurant = it) }
@@ -74,7 +70,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -93,35 +88,51 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 fun RestaurantGridScreen(
     restaurants: List<Restaurant>,
     modifier: Modifier = Modifier,
-    searchText: String,
     onTotalUpdated: (Int) -> Unit,
     onItemClick: (Restaurant) -> Unit
 ) {
-    val filteredRestaurants = restaurants.filter { restaurant ->
-        restaurant.RestaurantName.contains(searchText, ignoreCase = true) ||
-                restaurant.Description.contains(searchText, ignoreCase = true)
-    }
-    val total = filteredRestaurants.size
-    if(total == 0){
-        NoResult()
-    }
-    else{
-        onTotalUpdated(total)
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-                RestaurantCard(restaurant, onItemClick = onItemClick)
+    var filteredRestaurants = remember { mutableStateListOf<Restaurant>() }
+    var searchQuery by remember { mutableStateOf("") }
+    var total by remember {mutableStateOf(restaurants.size)}
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query},
+            onClearSearchQuery = { searchQuery = ""
+                total = restaurants.size
+            }
+        )
+        when(total){
+            0 -> NoResult()
+            else->{
+                onTotalUpdated(total)
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    filteredRestaurants.clear()
+                    filteredRestaurants.addAll(
+                        restaurants.filter { restaurant ->
+                            restaurant.RestaurantName.contains(searchQuery, ignoreCase = true) ||
+                                    restaurant.Description.contains(searchQuery, ignoreCase = true)
+                        }
+                    )
+                    total = filteredRestaurants.size
+                    items(
+                        items = filteredRestaurants,
+                        key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+                        RestaurantCard(restaurant, onItemClick = onItemClick)
+                    }
+                }
+
             }
         }
     }
 }
-
-
-
 
 @Composable
 fun RestaurantCard(

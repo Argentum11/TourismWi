@@ -105,7 +105,6 @@ fun TourismWizApp() {
                     var selectedCity by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchText by remember { mutableStateOf("") }
                     var expanded by remember { mutableStateOf(false) }
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
@@ -126,14 +125,7 @@ fun TourismWizApp() {
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
                         )
-                        TextField(
-                            value = searchText,
-                            onValueChange = { newValue -> searchText = newValue },
-                            label = { Text(stringResource(R.string.keyword)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        )
+
                         Row {
                             Button(onClick = {
                                 if (pageNumber >= 2) {
@@ -171,7 +163,7 @@ fun TourismWizApp() {
                                     selectedCity,
                                     pageNumber
                                 )
-                            }, searchText = searchText,
+                            },
                             onTotalUpdated = { total ->
                                 restaurantTotal = total
                             }

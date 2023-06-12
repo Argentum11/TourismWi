@@ -11,8 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,24 +38,10 @@ fun ScenicSpotGridScreen(scenicSpots: List<ScenicSpot>, modifier: Modifier  = Mo
     val filteredScenicSpots = remember { mutableStateListOf<ScenicSpot>() }
     var searchQuery by remember { mutableStateOf("") }
     Column(modifier = modifier.fillMaxWidth()) {
-        TextField(
-            value = searchQuery,
-            onValueChange = { query -> searchQuery = query },
-            label = { Text(stringResource(id = R.string.keyword)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            trailingIcon = {
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = "Clear",
-                            tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-                        )
-                    }
-                }
-            }
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = { searchQuery = "" }
         )
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
