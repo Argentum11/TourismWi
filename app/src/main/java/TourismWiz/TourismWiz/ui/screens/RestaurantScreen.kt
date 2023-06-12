@@ -4,6 +4,7 @@ import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -236,6 +237,20 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.Cyan
             )
+        }
+
+        item{
+            IconButton(
+                onClick = { Log.e("firebase","save") },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.bookmark_add),
+                    contentDescription = "bookmark icon",
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
         }
 
         item {
