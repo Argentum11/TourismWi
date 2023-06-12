@@ -112,8 +112,7 @@ fun TourismWizApp() {
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
                     val contextForToast = LocalContext.current.applicationContext
-                    Column()
-                    {
+                    Column{
                         CitySelector(
                             expanded = expanded,
                             onExpandedChange = { isExpanded -> expanded = isExpanded },
