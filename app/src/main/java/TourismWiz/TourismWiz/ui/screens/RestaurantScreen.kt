@@ -4,7 +4,6 @@ import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,12 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -212,18 +205,13 @@ fun RestaurantCard(
 
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
-
-    val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
-
-
     val context = LocalContext.current
-
+    val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
     val phoneNumberClick: () -> Unit = {
         val phoneUri = "tel:${phoneNumber}"
         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(phoneUri))
         context.startActivity(intent)
     }
-
     val addressClick: () -> Unit = {
         val mapUri = Uri.parse("geo:0,0?q=${restaurant.Address}")
         val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
@@ -237,9 +225,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             .padding(16.dp)
     ) {
         item {
-           
             DisplayImage(imageUrl = restaurant.Picture?.PictureUrl1)
-
             Text(
                 text = restaurant.RestaurantName,
                 style = MaterialTheme.typography.h5,
@@ -247,9 +233,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.Cyan
             )
-
         }
-
 
         item {
             Column(
@@ -266,7 +250,6 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
-
                 Row(
                     modifier = Modifier
                         .clickable(onClick = addressClick)
@@ -276,27 +259,19 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 ) {
                     Image(
                         painter = painterResource(R.drawable.maps),
-                        contentDescription = "Image",
+                        contentDescription = "Location icon",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
                     )
-                    if(restaurant.Address.length > 20)
-                    {
-                        Text(
-                            text = restaurant.Address,
-                            fontSize = 16.sp
-                        )
-                    }
-                    else
-                    {
-                        Text(
-                            text = restaurant.Address,
-                            fontSize = 24.sp
-                        )
-                    }
-                }
 
+                    val fontSize = if (restaurant.Address.length > 20) 16.sp else 24.sp
+                    Text(
+                        text = restaurant.Address,
+                        fontSize = fontSize
+                    )
+
+                }
 
                 Row(
                     modifier = Modifier
@@ -306,7 +281,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 ) {
                     Image(
                         painter = painterResource(R.drawable.call),
-                        contentDescription = "Image",
+                        contentDescription = "Phone icon",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
@@ -322,7 +297,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                     .fillMaxWidth(),){
                     Image(
                         painter = painterResource(R.drawable.open),
-                        contentDescription = "Image",
+                        contentDescription = "Open sign icon",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
@@ -334,24 +309,22 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                         )
                     }
                 }
-
             }
         }
 
         item{
-
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(top = 16.dp)
                 .background(Color(0xFFE0E0E0))
                 .padding(16.dp)) {
+
                 Text(
                     text = "詳細介紹 : ",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
-
                 Text(
                     text = restaurant.Description,
                     fontSize = 16.sp,
@@ -362,7 +335,6 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                         .padding(16.dp)
                 )
             }
-
         }
 
         item {
@@ -381,4 +353,3 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
         }
     }
 }
-
