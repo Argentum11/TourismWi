@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -34,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import androidx.compose.foundation.lazy.grid.items
 
 @Composable
 fun RestaurantScreen(
@@ -111,17 +111,20 @@ fun RestaurantGridScreen(
                 restaurant.Description.contains(searchText, ignoreCase = true)
     }
     val total = filteredRestaurants.size
-    onTotalUpdated(total)
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(
-            items = filteredRestaurants,
-            key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-            RestaurantCard(restaurant = restaurant, onItemClick = onItemClick)
+    if(total == 0){
+        NoResult()
+    }
+    else{
+        onTotalUpdated(total)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+                RestaurantCard(restaurant, onItemClick = onItemClick)
+            }
         }
     }
 }
@@ -158,8 +161,8 @@ fun RestaurantCard(
     modifier: Modifier = Modifier,
     onItemClick: (Restaurant) -> Unit
 ) {
-    val LightBlue = Color(0xFFB2EBF2)
-    val DarkBlue = Color(0xFF00008B)
+    val lightBlue = Color(0xFFB2EBF2)
+    val darkBlue = Color(0xFF00008B)
     Card(
         modifier = modifier
             .padding(4.dp)
@@ -167,7 +170,7 @@ fun RestaurantCard(
             .aspectRatio(1f)
             .clickable { onItemClick(restaurant) },
         elevation = 8.dp,
-        backgroundColor = LightBlue,
+        backgroundColor = lightBlue,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -186,7 +189,7 @@ fun RestaurantCard(
                     style = MaterialTheme.typography.h5,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
-                    color = DarkBlue
+                    color = darkBlue
                 )
 
                 Text(
@@ -196,7 +199,7 @@ fun RestaurantCard(
                     style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth(),
-                    color = Color.DarkGray
+                    color = MaterialTheme.colors.secondary
                 )
             }
         }

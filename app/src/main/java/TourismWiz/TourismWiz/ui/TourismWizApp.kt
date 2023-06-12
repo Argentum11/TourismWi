@@ -205,7 +205,7 @@ fun CitySelector(
         )
 
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
-            val citiesForRestaurant = City.cities.filterNot { it == City.taipei }
+            val citiesForRestaurant = City.cities
 
             citiesForRestaurant.forEach { selectedOption ->
                 DropdownMenuItem(onClick = {
