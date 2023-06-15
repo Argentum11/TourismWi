@@ -1,14 +1,23 @@
 package TourismWiz.TourismWiz.ui.screens
 
+import TourismWiz.TourismWiz.R
+import TourismWiz.TourismWiz.data.darkBlue
+import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.ScenicSpot
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -26,29 +35,80 @@ fun ScenicSpotScreen(
 
 @Composable
 fun ScenicSpotGridScreen(scenicSpots: List<ScenicSpot>, modifier: Modifier  = Modifier){
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
-        modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(4.dp)
-    ) {
-        items(items = scenicSpots, key = {scenicSpots -> scenicSpots.ScenicSpotID}) {restaurant ->
-            ScenicSpotCard(restaurant)
+    val filteredScenicSpots = remember { mutableStateListOf<ScenicSpot>() }
+    var searchQuery by remember { mutableStateOf("") }
+    Column(modifier = modifier.fillMaxWidth()) {
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = { searchQuery = "" }
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            filteredScenicSpots.clear()
+            filteredScenicSpots.addAll(
+                scenicSpots.filter { scenicSpot ->
+                    scenicSpot.ScenicSpotName.contains(searchQuery, ignoreCase = true) ||
+                            scenicSpot.Description?.contains(searchQuery, ignoreCase = true) == true
+                }
+            )
+            items(
+                items = filteredScenicSpots,
+                key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
+                ScenicSpotCard(scenicSpot)
+            }
         }
     }
 }
 
 @Composable
-fun ScenicSpotCard(scenicSpots: ScenicSpot, modifier: Modifier = Modifier){
+fun ScenicSpotCard(scenicSpot: ScenicSpot, modifier: Modifier = Modifier
+//,onItemClick: (ScenicSpot) -> Unit
+){
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .aspectRatio(1f),
-        elevation = 8.dp
+            .aspectRatio(1f)
+            //.clickable { onItemClick(scenicSpot) }
+        ,
+        elevation = 8.dp,
+        backgroundColor = lightBlue,
+        shape = RoundedCornerShape(8.dp)
     ) {
-        Column {
-            Text(text = scenicSpots.ScenicSpotName)
-            Text(text = scenicSpots.Description ?: "無介紹")//todo
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(Color.White)
+            ) {
+                ImageDisplay(scenicSpot.Picture.PictureUrl1)
+                Text(
+                    text = scenicSpot.ScenicSpotName,
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = darkBlue
+                )
+
+                Text(
+                    text = scenicSpot.Description?.take(80) ?: stringResource(R.string.default_scenicspot_description),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.body2,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colors.secondary
+                )
+            }
         }
     }
 }

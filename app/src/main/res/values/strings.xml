@@ -34,4 +34,6 @@
     <string name="related_info">相關資訊</string>
     <string name="detailed_description">詳細介紹</string>
     <string name="data_update_date">資料更新日</string>
+    <string name="default_hotel_description">一個普通的飯店</string>
+    <string name="default_scenicspot_description">一個普通的景點</string>
 </resources>

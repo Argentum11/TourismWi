@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -107,7 +106,6 @@ fun TourismWizApp() {
                     var selectedCity by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchText by remember { mutableStateOf("") }
                     var expanded by remember { mutableStateOf(false) }
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
@@ -128,34 +126,21 @@ fun TourismWizApp() {
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
                         )
-                        TextField(
-                            value = searchText,
-                            onValueChange = { newValue -> searchText = newValue },
-                            label = { Text(stringResource(R.string.keyword)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Button(
-                                onClick = {
-                                    if (pageNumber >= 2) {
-                                        pageNumber -= 1
-                                        restaurantViewModel.getRestaurants(selectedCity, pageNumber)
-                                    } else {
-                                        Toast.makeText(
-                                            contextForToast,
-                                            contextForToast.getText(R.string.noPreviousPage),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(text = "<<")
+                        
+                        Row {
+                            Button(onClick = {
+                                if (pageNumber >= 2) {
+                                    pageNumber -= 1
+                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                } else {
+                                    Toast.makeText(
+                                        contextForToast,
+                                        contextForToast.getText(R.string.noPreviousPage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }) {
+                                Text(text = "previous")
                             }
 
                             Text(
@@ -188,7 +173,7 @@ fun TourismWizApp() {
                                     selectedCity,
                                     pageNumber
                                 )
-                            }, searchText = searchText,
+                            },
                             onTotalUpdated = { total ->
                                 restaurantTotal = total
                             }
