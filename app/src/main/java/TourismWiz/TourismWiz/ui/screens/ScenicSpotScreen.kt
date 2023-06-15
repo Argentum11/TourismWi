@@ -137,8 +137,7 @@ fun ScenicSpotCard(
                 )
 
                 Text(
-                    text = scenicSpot.Description?.take(80)
-                        ?: stringResource(R.string.default_scenicspot_description),
+                    text = scenicSpot.DescriptionDetail.take(80),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body2,
@@ -288,7 +287,7 @@ fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = scenicSpot.Description ?: "sdfs",
+                    text = scenicSpot.DescriptionDetail,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()

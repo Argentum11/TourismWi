@@ -116,7 +116,7 @@ fun HotelCard(
             .padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(1f)
-            .clickable { onItemClick(hotel)}
+            .clickable { onItemClick(hotel) }
         ,
         elevation = 8.dp,
         backgroundColor = lightBlue,
@@ -241,19 +241,17 @@ fun HotelDetailScreen(hotel: Hotel) {
                         .padding(top = 20.dp)
                         .fillMaxWidth(),
                 ) {
-                    if (hotel.Spec != null) {
                     Image(
-                        painter = painterResource(R.drawable.open),
-                        contentDescription = "Open sign icon",//TODO
+                        painter = painterResource(R.drawable.parking),
+                        contentDescription = "Open sign icon",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
                     )
                         Text(
-                            text = hotel.Spec,
+                            text = hotel.ParkingInfo,
                             fontSize = 20.sp
                         )
-                    }
                 }
             }
         }
@@ -274,7 +272,7 @@ fun HotelDetailScreen(hotel: Hotel) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = hotel.Description ?: "sdfs",
+                    text = hotel.Description ?: stringResource(id = R.string.default_hotel_description),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
