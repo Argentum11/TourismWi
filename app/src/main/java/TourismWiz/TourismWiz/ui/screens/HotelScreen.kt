@@ -1,11 +1,14 @@
 package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.R
+import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.Hotel
+import TourismWiz.TourismWiz.model.Restaurant
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -45,26 +49,75 @@ fun HotelScreen(
 ) {
     val navController = rememberNavController()
     var selectedHotelId by remember { mutableStateOf("") }
+    var fav_list by remember { mutableStateOf(mutableListOf<Hotel>()) }
+    var isShow by remember { mutableStateOf(false)}
 
-    when (hotelUiState) {
-        is HotelUiState.Loading -> LoadingScreen(modifier)
-        is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
-        is HotelUiState.Success -> {
-            NavHost(navController = navController, startDestination = "hotelGrid") {
-                composable("hotelGrid") {
-                    HotelGridScreen(
-                        hotels = hotelUiState.hotels,
-                        modifier,
-                        onItemClick = { hotel ->
-                            selectedHotelId = hotel.HotelID
-                            navController.navigate("hotelDetail")
+    when(isShow){
+        true->{
+            when (hotelUiState) {
+                is HotelUiState.Loading -> LoadingScreen(modifier)
+                is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
+                is HotelUiState.Success -> {
+                    NavHost(navController = navController, startDestination = "hotelGrid") {
+                        composable("hotelGrid") {
+                            Column {
+                                LoginScreen(field = "Hotel", myItem = null, saveList = {
+                                    fav_list = it as MutableList<Hotel>
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                })
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
+
+                                HotelGridScreen(
+                                    hotels = fav_list,
+                                    modifier,
+                                    onItemClick = { hotel ->
+                                        selectedHotelId = hotel.HotelID
+                                        navController.navigate("hotelDetail")
+                                    }
+                                )
+                            }
                         }
-                    )
+                        composable("hotelDetail") {
+                            val restaurant =
+                                hotelUiState.hotels.find { it.HotelID == selectedHotelId }
+                            restaurant?.let { HotelDetailScreen(hotel = it) }
+                        }
+                    }
                 }
-                composable("hotelDetail") {
-                    val restaurant =
-                        hotelUiState.hotels.find { it.HotelID == selectedHotelId }
-                    restaurant?.let { HotelDetailScreen(hotel = it) }
+            }
+        }
+        false->{
+            when (hotelUiState) {
+                is HotelUiState.Loading -> LoadingScreen(modifier)
+                is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
+                is HotelUiState.Success -> {
+                    NavHost(navController = navController, startDestination = "hotelGrid") {
+                        composable("hotelGrid") {
+                            Column {
+                                LoginScreen(field = "Hotel", myItem = null, saveList = {
+                                    fav_list = it as MutableList<Hotel>
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                })
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
+
+                                HotelGridScreen(
+                                    hotels = hotelUiState.hotels,
+                                    modifier,
+                                    onItemClick = { hotel ->
+                                        selectedHotelId = hotel.HotelID
+                                        navController.navigate("hotelDetail")
+                                    }
+                                )
+                            }
+                        }
+                        composable("hotelDetail") {
+                            val restaurant =
+                                hotelUiState.hotels.find { it.HotelID == selectedHotelId }
+                            restaurant?.let { HotelDetailScreen(hotel = it) }
+                        }
+                    }
                 }
             }
         }
@@ -79,6 +132,7 @@ fun HotelGridScreen(
 ) {
     val filteredHotels = remember { mutableStateListOf<Hotel>() }
     var searchQuery by remember { mutableStateOf("") }
+    var total by remember { mutableStateOf(hotels.size) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         SearchTextField(
@@ -86,21 +140,29 @@ fun HotelGridScreen(
             onSearchQueryChange = { query -> searchQuery = query },
             onClearSearchQuery = { searchQuery = "" }
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            filteredHotels.clear()
-            filteredHotels.addAll(
-                hotels.filter { hotel ->
-                    hotel.HotelName.contains(searchQuery, ignoreCase = true) ||
-                            hotel.Description?.contains(searchQuery, ignoreCase = true) == true
+        when(total) {
+            0 -> NoResult()
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    filteredHotels.clear()
+                    filteredHotels.addAll(
+                        hotels.filter { hotel ->
+                            hotel.HotelName.contains(searchQuery, ignoreCase = true) ||
+                                    hotel.Description?.contains(
+                                        searchQuery,
+                                        ignoreCase = true
+                                    ) == true
+                        }
+                    )
+                    items(items = filteredHotels, key = { hotel -> hotel.HotelID }) { hotel ->
+                        HotelCard(hotel, onItemClick = onItemClick)
+                    }
                 }
-            )
-            items(items = filteredHotels, key = { hotel -> hotel.HotelID }) { hotel ->
-                HotelCard(hotel, onItemClick = onItemClick)
             }
         }
     }
@@ -158,6 +220,7 @@ fun HotelCard(
 
 @Composable
 fun HotelDetailScreen(hotel: Hotel) {
+    val commentList = CommentList(id = hotel.HotelID)
     val context = LocalContext.current
     val phoneNumber = "0" + hotel.Phone.replace("-", "").removePrefix("886")
     val phoneNumberClick: () -> Unit = {
@@ -177,6 +240,12 @@ fun HotelDetailScreen(hotel: Hotel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        item {
+            LoginScreen(field = "Hotel", myItem = hotel, saveList = {})
+        }
+        item {
+            CommentAdd(id = hotel.HotelID)
+        }
         item {
             ImageDisplay(hotel.Picture.PictureUrl1)
         }
@@ -298,6 +367,23 @@ fun HotelDetailScreen(hotel: Hotel) {
                     .clip(shape = RoundedCornerShape(8.dp)),
                 color = Color.Black
             )
+        }
+        items(commentList) { comment ->
+            Column {
+                Text("${comment.name}")
+                Text("#${comment.email}",color = Color.Gray)
+                Row {
+                    repeat(comment.rate) {
+                        Image(
+                            painter = painterResource(R.drawable.star),
+                            contentDescription = "Image",
+                            modifier = Modifier.size(20.dp,20.dp)
+                        )
+                    }
+                }
+                Text("${comment.comment}")
+                Divider()
+            }
         }
     }
 }

@@ -1,11 +1,14 @@
 package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.R
+import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
+import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.model.ScenicSpot
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -41,28 +45,74 @@ fun ScenicSpotScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    var fav_list by remember { mutableStateOf(mutableListOf<ScenicSpot>()) }
+    var isShow by remember { mutableStateOf(false)}
     var selectedScenicSpotId by remember { mutableStateOf("") }
-
-    when (scenicSpotUiState) {
-        is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
-        is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
-        is ScenicSpotUiState.Success -> {
-            NavHost(navController = navController, startDestination = "scenicSpotGrid") {
-                composable("scenicSpotGrid") {
-                    ScenicSpotGridScreen(scenicSpots = scenicSpotUiState.scenicSpots, modifier,
-                        onItemClick = { scenicSpot ->
-                            selectedScenicSpotId = scenicSpot.ScenicSpotID
-                            navController.navigate("scenicSpotDetail")
-                        })
+    when(isShow){
+        true ->{
+            when (scenicSpotUiState) {
+                is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
+                is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
+                is ScenicSpotUiState.Success -> {
+                    NavHost(navController = navController, startDestination = "scenicSpotGrid") {
+                        composable("scenicSpotGrid") {
+                            Column {
+                                LoginScreen(field = "ScenicSpot", myItem = null, saveList = {
+                                    fav_list = it as MutableList<ScenicSpot>
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                })
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
+                                ScenicSpotGridScreen(scenicSpots = fav_list,
+                                    modifier,
+                                    onItemClick = { scenicSpot ->
+                                        selectedScenicSpotId = scenicSpot.ScenicSpotID
+                                        navController.navigate("scenicSpotDetail")
+                                    })
+                            }
+                        }
+                        composable("scenicSpotDetail") {
+                            val scenicSpot =
+                                scenicSpotUiState.scenicSpots.find { it.ScenicSpotID == selectedScenicSpotId }
+                            scenicSpot?.let { ScenicSpotDetailScreen(scenicSpot = it) }
+                        }
+                    }
                 }
-                composable("scenicSpotDetail") {
-                    val scenicSpot =
-                        scenicSpotUiState.scenicSpots.find { it.ScenicSpotID == selectedScenicSpotId }
-                    scenicSpot?.let { ScenicSpotDetailScreen(scenicSpot = it) }
+            }
+        }
+        false ->{
+            when (scenicSpotUiState) {
+                is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
+                is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
+                is ScenicSpotUiState.Success -> {
+                    NavHost(navController = navController, startDestination = "scenicSpotGrid") {
+                        composable("scenicSpotGrid") {
+                            Column {
+                                LoginScreen(field = "ScenicSpot", myItem = null, saveList = {
+                                    fav_list = it as MutableList<ScenicSpot>
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                })
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
+                                ScenicSpotGridScreen(scenicSpots = scenicSpotUiState.scenicSpots,
+                                    modifier,
+                                    onItemClick = { scenicSpot ->
+                                        selectedScenicSpotId = scenicSpot.ScenicSpotID
+                                        navController.navigate("scenicSpotDetail")
+                                    })
+                            }
+                        }
+                        composable("scenicSpotDetail") {
+                            val scenicSpot =
+                                scenicSpotUiState.scenicSpots.find { it.ScenicSpotID == selectedScenicSpotId }
+                            scenicSpot?.let { ScenicSpotDetailScreen(scenicSpot = it) }
+                        }
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -73,6 +123,8 @@ fun ScenicSpotGridScreen(
     val filteredScenicSpots = remember { mutableStateListOf<ScenicSpot>() }
     val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
+    var total by remember { mutableStateOf(scenicSpots.size) }
+
     Column(modifier = modifier
         .fillMaxWidth()
         .clickable { focusManager.clearFocus() }) {
@@ -81,23 +133,31 @@ fun ScenicSpotGridScreen(
             onSearchQueryChange = { query -> searchQuery = query },
             onClearSearchQuery = { searchQuery = "" }
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            filteredScenicSpots.clear()
-            filteredScenicSpots.addAll(
-                scenicSpots.filter { scenicSpot ->
-                    scenicSpot.ScenicSpotName.contains(searchQuery, ignoreCase = true) ||
-                            scenicSpot.Description?.contains(searchQuery, ignoreCase = true) == true
+        when(total) {
+            0 -> NoResult()
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    filteredScenicSpots.clear()
+                    filteredScenicSpots.addAll(
+                        scenicSpots.filter { scenicSpot ->
+                            scenicSpot.ScenicSpotName.contains(searchQuery, ignoreCase = true) ||
+                                    scenicSpot.Description?.contains(
+                                        searchQuery,
+                                        ignoreCase = true
+                                    ) == true
+                        }
+                    )
+                    items(
+                        items = filteredScenicSpots,
+                        key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
+                        ScenicSpotCard(scenicSpot, onItemClick = onItemClick)
+                    }
                 }
-            )
-            items(
-                items = filteredScenicSpots,
-                key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
-                ScenicSpotCard(scenicSpot, onItemClick = onItemClick)
             }
         }
     }
@@ -153,6 +213,7 @@ fun ScenicSpotCard(
 
 @Composable
 fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
+    val commentList = CommentList(id = scenicSpot.ScenicSpotID)
     val context = LocalContext.current
     var phoneNumber = ""
     val phoneNumberClick: () -> Unit = {
@@ -176,6 +237,12 @@ fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        item {
+            LoginScreen(field = "ScenicSpot", myItem = scenicSpot, saveList = {})
+        }
+        item {
+            CommentAdd(id = scenicSpot.ScenicSpotID)
+        }
         item {
             ImageDisplay(scenicSpot.Picture.PictureUrl1)
         }
@@ -312,6 +379,23 @@ fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
                     .clip(shape = RoundedCornerShape(8.dp)),
                 color = Color.Black
             )
+        }
+        items(commentList) { comment ->
+            Column {
+                Text("${comment.name}")
+                Text("#${comment.email}",color = Color.Gray)
+                Row {
+                    repeat(comment.rate) {
+                        Image(
+                            painter = painterResource(R.drawable.star),
+                            contentDescription = "Image",
+                            modifier = Modifier.size(20.dp,20.dp)
+                        )
+                    }
+                }
+                Text("${comment.comment}")
+                Divider()
+            }
         }
     }
 }

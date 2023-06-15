@@ -9,6 +9,7 @@ import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.FireBase
 import TourismWiz.TourismWiz.data.MyUser
+import TourismWiz.TourismWiz.model.ScenicSpot
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,33 +50,8 @@ fun RestaurantScreen(
 ) {
     val navController = rememberNavController()
     var fav_list by remember { mutableStateOf(mutableListOf<Restaurant>()) }
-    var selectedRestaurantId by remember { mutableStateOf("") }
     var isShow by remember { mutableStateOf(false)}
-    var i by remember { mutableStateOf(true)}
-
-    when (restaurantUiState) {
-        is RestaurantUiState.Loading -> LoadingScreen(modifier)
-        is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
-        is RestaurantUiState.Success -> {
-            NavHost(navController = navController, startDestination = "restaurantGrid") {
-                composable("restaurantGrid") {
-                    RestaurantGridScreen(
-                        restaurants = restaurantUiState.restaurants,
-                        onTotalUpdated = onTotalUpdated,
-                        onItemClick = { restaurant ->
-                            selectedRestaurantId = restaurant.RestaurantID
-                            navController.navigate("restaurantDetail")
-                        }
-                    )
-                }
-                composable("restaurantDetail") {
-                    val restaurant =
-                        restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
-                    restaurant?.let { RestaurantDetailScreen(restaurant = it) }
-                }
-            }
-        }
-    }
+    var selectedRestaurantId by remember { mutableStateOf("") }
     when (isShow){
         true ->{
             when (restaurantUiState) {
@@ -86,7 +62,7 @@ fun RestaurantScreen(
                         composable("restaurantGrid") {
                             Column {
                                 LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                    fav_list = it
+                                    fav_list = it as MutableList<Restaurant>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
@@ -119,7 +95,7 @@ fun RestaurantScreen(
                         composable("restaurantGrid") {
                             Column {
                                 LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                    fav_list = it
+                                    fav_list = it as MutableList<Restaurant>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
@@ -190,11 +166,11 @@ fun RestaurantGridScreen(
                 total = restaurants.size
             }
         )
+
         when (total) {
             0 -> NoResult()
             else -> {
                 onTotalUpdated(total)
-
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     modifier = modifier.fillMaxWidth(),
@@ -215,7 +191,6 @@ fun RestaurantGridScreen(
                         RestaurantCard(restaurant, onItemClick = onItemClick)
                     }
                 }
-
             }
         }
     }
@@ -430,7 +405,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 Row {
                     repeat(comment.rate) {
                         Image(
-                            painter = painterResource(R.drawable.star), // 替换为您的图片资源
+                            painter = painterResource(R.drawable.star),
                             contentDescription = "Image",
                             modifier = Modifier.size(20.dp,20.dp)
                         )

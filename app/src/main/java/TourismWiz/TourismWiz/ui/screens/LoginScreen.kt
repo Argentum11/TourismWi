@@ -5,7 +5,9 @@ import TourismWiz.TourismWiz.data.FireBase
 import TourismWiz.TourismWiz.data.FireBase.Companion.gson
 import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.data.MyUser.Companion.user
+import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.Restaurant
+import TourismWiz.TourismWiz.model.ScenicSpot
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -28,7 +30,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.google.firebase.firestore.DocumentSnapshot
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
-fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -> Unit) {
+fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit) {
     var isLoginDialogVisible by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -40,7 +42,7 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -
                     if (user!=null) {
                         if(myItem==null) {
                             if(field=="Restaurant") {
-                                var ml = mutableListOf<Restaurant>()
+                                var ml = mutableListOf<Any>()
                                 user?.email?.let {
                                     FireBase.getFavorite(it, field) {
                                         for (i in it) {
@@ -55,10 +57,41 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -
                                         saveList(ml)
                                     }
                                 }
+                            }else if(field== "ScenicSpot"){
+                                var ml = mutableListOf<Any>()
+                                user?.email?.let {
+                                    FireBase.getFavorite(it, field) {
+                                        for (i in it) {
+                                            val r: ScenicSpot = gson.fromJson(
+                                                i.get("item").toString(),
+                                                ScenicSpot::class.java
+                                            )
+                                            //Log.d("FireBaseRelated",i.toString())
+                                            ml.add(r)
+                                        }
+                                        //Log.d("FireBaseRelated",ml.toString())
+                                        saveList(ml)
+                                    }
+                                }
+                            }else{
+                                var ml = mutableListOf<Any>()
+                                user?.email?.let {
+                                    FireBase.getFavorite(it, field) {
+                                        for (i in it) {
+                                            val r: Hotel = gson.fromJson(
+                                                i.get("item").toString(),
+                                                Hotel::class.java
+                                            )
+                                            //Log.d("FireBaseRelated",i.toString())
+                                            ml.add(r)
+                                        }
+                                        //Log.d("FireBaseRelated",ml.toString())
+                                        saveList(ml)
+                                    }
+                                }
                             }
                         }else{
-                            if(field=="Restaurant")
-                                user?.email?.let { FireBase.addFavorite(it,field,myItem) }
+                            user?.email?.let { FireBase.addFavorite(it,field,myItem) }
                         }
                     }
                     else {

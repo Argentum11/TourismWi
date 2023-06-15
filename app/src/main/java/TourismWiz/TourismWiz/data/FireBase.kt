@@ -1,6 +1,8 @@
 package TourismWiz.TourismWiz.data
 
+import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.Restaurant
+import TourismWiz.TourismWiz.model.ScenicSpot
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -207,9 +209,31 @@ class FireBase {
                             }
                         }
                     }else if(field=="Hotel"){
-
+                        for (i in result) {
+                            val r: Hotel = gson.fromJson(
+                                i.get("item").toString(),
+                                Hotel::class.java
+                            )
+                            Log.d("FireBaseRelated", r.toString())
+                            if (r.HotelID == (item as Hotel).HotelID) {
+                                flag = false
+                                id = i.id
+                                break
+                            }
+                        }
                     }else{
-
+                        for (i in result) {
+                            val r: ScenicSpot = gson.fromJson(
+                                i.get("item").toString(),
+                                ScenicSpot::class.java
+                            )
+                            Log.d("FireBaseRelated", r.toString())
+                            if (r.ScenicSpotID == (item as ScenicSpot).ScenicSpotID) {
+                                flag = false
+                                id = i.id
+                                break
+                            }
+                        }
                     }
                     if (flag)
                         addData(email, input)
