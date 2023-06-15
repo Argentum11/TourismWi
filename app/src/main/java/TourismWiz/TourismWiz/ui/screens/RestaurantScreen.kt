@@ -101,19 +101,20 @@ fun RestaurantGridScreen(
 ) {
     var filteredRestaurants = remember { mutableStateListOf<Restaurant>() }
     var searchQuery by remember { mutableStateOf("") }
-    var total by remember {mutableStateOf(restaurants.size)}
+    var total by remember { mutableStateOf(restaurants.size) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         SearchTextField(
             searchQuery = searchQuery,
-            onSearchQueryChange = { query -> searchQuery = query},
-            onClearSearchQuery = { searchQuery = ""
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = {
+                searchQuery = ""
                 total = restaurants.size
             }
         )
-        when(total){
+        when (total) {
             0 -> NoResult()
-            else->{
+            else -> {
                 onTotalUpdated(total)
 
                 LazyVerticalGrid(
@@ -227,7 +228,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             ) {
 
                 Text(
-                    text = stringResource(R.string.related_info)+" : ",
+                    text = stringResource(R.string.related_info) + " : ",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -271,17 +272,19 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                     )
                 }
 
-                Row( modifier = Modifier
-                    .padding(top = 20.dp)
-                    .fillMaxWidth(),){
-                    Image(
-                        painter = painterResource(R.drawable.open),
-                        contentDescription = "Open sign icon",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(end = 8.dp)
-                    )
-                    if(restaurant.OpenTime != null){
+                Row(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .fillMaxWidth(),
+                ) {
+                    if (restaurant.OpenTime != null) {
+                        Image(
+                            painter = painterResource(R.drawable.open),
+                            contentDescription = "Open sign icon",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(end = 8.dp)
+                        )
                         Text(
                             text = restaurant.OpenTime,
                             fontSize = 20.sp
@@ -291,16 +294,18 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             }
         }
 
-        item{
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(top = 16.dp)
-                .background(Color(0xFFE0E0E0))
-                .padding(16.dp)) {
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            ) {
 
                 Text(
-                    text = stringResource(R.string.detailed_description)+ " : " ,
+                    text = stringResource(R.string.detailed_description) + " : ",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
