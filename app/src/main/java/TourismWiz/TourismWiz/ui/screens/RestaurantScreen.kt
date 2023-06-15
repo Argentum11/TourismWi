@@ -2,6 +2,10 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.R
+import android.content.Intent
+import android.net.Uri
+import TourismWiz.TourismWiz.data.darkBlue
+import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.FireBase
 import TourismWiz.TourismWiz.data.MyUser
@@ -19,29 +23,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 
 @Composable
 fun RestaurantScreen(
     restaurantUiState: RestaurantUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    searchText: String,
     onTotalUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
@@ -49,81 +52,30 @@ fun RestaurantScreen(
     var selectedRestaurantId by remember { mutableStateOf("") }
     var isShow by remember { mutableStateOf(false)}
     var i by remember { mutableStateOf(true)}
-    /*
+
     when (restaurantUiState) {
         is RestaurantUiState.Loading -> LoadingScreen(modifier)
         is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
         is RestaurantUiState.Success -> {
-            when(isShow){
-                true ->{
-                    NavHost(navController = navController, startDestination = "restaurantGrid") {
-                        composable("restaurantGrid") {
-                            Column {
-                                LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                    fav_list = it
-                                    isShow = isShow == false
-                                    Log.d("FireBaseRelated","true in"+isShow.toString())
-                                })
-                                LaunchedEffect(i) {
-                                    i=i==false
-                                }
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
-                                RestaurantGridScreen(
-                                    restaurants = fav_list,
-                                    searchText = searchText,
-                                    onTotalUpdated = onTotalUpdated,
-                                    onItemClick = { restaurant ->
-                                        selectedRestaurantId = restaurant.RestaurantID
-                                        navController.navigate("restaurantDetail")
-                                    }
-                                )
-                            }
+            NavHost(navController = navController, startDestination = "restaurantGrid") {
+                composable("restaurantGrid") {
+                    RestaurantGridScreen(
+                        restaurants = restaurantUiState.restaurants,
+                        onTotalUpdated = onTotalUpdated,
+                        onItemClick = { restaurant ->
+                            selectedRestaurantId = restaurant.RestaurantID
+                            navController.navigate("restaurantDetail")
                         }
-                        composable("restaurantDetail") {
-                            val restaurant =
-                                restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
-                            restaurant?.let { RestaurantDetailScreen(restaurant = it) }
-                        }
-                    }
+                    )
                 }
-                false ->{
-                    NavHost(navController = navController, startDestination = "restaurantGrid") {
-                        composable("restaurantGrid") {
-                            Column {
-                                LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                    fav_list = it
-                                    isShow = isShow == false
-                                    Log.d("FireBaseRelated","false in"+isShow.toString())
-                                })
-                                LaunchedEffect(i) {
-                                    i=i==false
-                                }
-                                Log.d("FireBaseRelated", "false out " + fav_list.toString())
-                                RestaurantGridScreen(
-                                    restaurants = restaurantUiState.restaurants,
-                                    searchText = searchText,
-                                    onTotalUpdated = onTotalUpdated,
-                                    onItemClick = { restaurant ->
-                                        selectedRestaurantId = restaurant.RestaurantID
-                                        navController.navigate("restaurantDetail")
-                                    }
-                                )
-                            }
-                        }
-                        composable("restaurantDetail") {
-                            val restaurant =
-                                restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
-                            restaurant?.let { RestaurantDetailScreen(restaurant = it) }
-                        }
-                    }
+                composable("restaurantDetail") {
+                    val restaurant =
+                        restaurantUiState.restaurants.find { it.RestaurantID == selectedRestaurantId }
+                    restaurant?.let { RestaurantDetailScreen(restaurant = it) }
                 }
             }
-
         }
     }
-
-     */
-
     when (isShow){
         true ->{
             when (restaurantUiState) {
@@ -132,23 +84,22 @@ fun RestaurantScreen(
                 is RestaurantUiState.Success -> {
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
-                           Column {
-                               LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                   fav_list = it
-                                   isShow = isShow == false
-                                   Log.d("FireBaseRelated","true in"+isShow.toString())
-                               })
-                               Log.d("FireBaseRelated", "true out " + fav_list.toString())
-                               RestaurantGridScreen(
-                                   restaurants = fav_list,
-                                   searchText = searchText,
-                                   onTotalUpdated = onTotalUpdated,
-                                   onItemClick = { restaurant ->
-                                       selectedRestaurantId = restaurant.RestaurantID
-                                       navController.navigate("restaurantDetail")
-                                   }
-                               )
-                           }
+                            Column {
+                                LoginScreen(field = "Restaurant", myItem = null, saveList = {
+                                    fav_list = it
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                })
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
+                                RestaurantGridScreen(
+                                    restaurants = fav_list,
+                                    onTotalUpdated = onTotalUpdated,
+                                    onItemClick = { restaurant ->
+                                        selectedRestaurantId = restaurant.RestaurantID
+                                        navController.navigate("restaurantDetail")
+                                    }
+                                )
+                            }
                         }
                         composable("restaurantDetail") {
                             val restaurant =
@@ -168,24 +119,15 @@ fun RestaurantScreen(
                         composable("restaurantGrid") {
                             Column {
                                 LoginScreen(field = "Restaurant", myItem = null, saveList = {
-                                    fav_list=it
-                                    isShow = isShow==false
-                                    Log.d("FireBaseRelated","false in "+isShow.toString())
+                                    fav_list = it
+                                    isShow = isShow == false
+                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
-                                Log.d("FireBaseRelated","false out "+ fav_list.toString())
+                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 RestaurantGridScreen(
                                     restaurants = restaurantUiState.restaurants,
-                                    searchText = searchText,
                                     onTotalUpdated = onTotalUpdated,
                                     onItemClick = { restaurant ->
-                                        /*
-                                        MyUser.user?.email?.let { it1 ->
-                                            MyUser.user?.displayName?.let { it2 ->
-                                                FireBase.addComment(restaurant.RestaurantID,
-                                                    it1, it2,"test")
-                                            }
-                                        }
-                                        */
                                         selectedRestaurantId = restaurant.RestaurantID
                                         navController.navigate("restaurantDetail")
                                     }
@@ -214,7 +156,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -233,58 +174,52 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 fun RestaurantGridScreen(
     restaurants: List<Restaurant>,
     modifier: Modifier = Modifier,
-    searchText: String,
     onTotalUpdated: (Int) -> Unit,
     onItemClick: (Restaurant) -> Unit
 ) {
-    val filteredRestaurants = restaurants.filter { restaurant ->
-        restaurant.RestaurantName.contains(searchText, ignoreCase = true) ||
-                restaurant.Description.contains(searchText, ignoreCase = true)
-    }
-    val total = filteredRestaurants.size
-    if(total == 0){
-        NoResult()
-    }
-    else{
-        onTotalUpdated(total)
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            items(items = filteredRestaurants, key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
-                RestaurantCard(restaurant, onItemClick = onItemClick)
+    var filteredRestaurants = remember { mutableStateListOf<Restaurant>() }
+    var searchQuery by remember { mutableStateOf("") }
+    var total by remember { mutableStateOf(restaurants.size) }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = {
+                searchQuery = ""
+                total = restaurants.size
+            }
+        )
+        when (total) {
+            0 -> NoResult()
+            else -> {
+                onTotalUpdated(total)
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    filteredRestaurants.clear()
+                    filteredRestaurants.addAll(
+                        restaurants.filter { restaurant ->
+                            restaurant.RestaurantName.contains(searchQuery, ignoreCase = true) ||
+                                    restaurant.Description.contains(searchQuery, ignoreCase = true)
+                        }
+                    )
+                    total = filteredRestaurants.size
+                    items(
+                        items = filteredRestaurants,
+                        key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
+                        RestaurantCard(restaurant, onItemClick = onItemClick)
+                    }
+                }
+
             }
         }
     }
 }
-
-@Composable
-fun DisplayImage(imageUrl: String?) {
-    if (imageUrl == null) {
-        Image(
-            painter = painterResource(id = R.drawable.noimage),
-            contentDescription = "No Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
-    } else {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = "Restaurant Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
-    }
-}
-
 
 @Composable
 fun RestaurantCard(
@@ -292,8 +227,6 @@ fun RestaurantCard(
     modifier: Modifier = Modifier,
     onItemClick: (Restaurant) -> Unit
 ) {
-    val lightBlue = Color(0xFFB2EBF2)
-    val darkBlue = Color(0xFF00008B)
     Card(
         modifier = modifier
             .padding(4.dp)
@@ -314,7 +247,7 @@ fun RestaurantCard(
                     .padding(16.dp)
                     .background(Color.White)
             ) {
-                DisplayImage(restaurant.Picture?.PictureUrl1)
+                ImageDisplay(restaurant.Picture?.PictureUrl1)
                 Text(
                     text = restaurant.RestaurantName,
                     style = MaterialTheme.typography.h5,
@@ -337,11 +270,28 @@ fun RestaurantCard(
     }
 }
 
-
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
     val commentList = CommentList(id = restaurant.RestaurantID)
-    LazyColumn {
+    val context = LocalContext.current
+    val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
+    val phoneNumberClick: () -> Unit = {
+        val phoneUri = "tel:${phoneNumber}"
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(phoneUri))
+        context.startActivity(intent)
+    }
+    val addressClick: () -> Unit = {
+        val mapUri = Uri.parse("geo:0,0?q=${restaurant.Address}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+        mapIntent.setPackage("com.google.android.apps.maps") // 指定使用 Google 地图应用
+        context.startActivity(mapIntent)
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         item {
             LoginScreen(field = "Restaurant", myItem = restaurant, saveList = {})
         }
@@ -349,24 +299,126 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             CommentAdd(id = restaurant.RestaurantID)
         }
         item {
-            DisplayImage(restaurant.Picture?.PictureUrl1)
+            ImageDisplay(restaurant.Picture?.PictureUrl1)
         }
+
         item {
-            Row {
-                Button(onClick = {}) {
-                    Text(text = "save")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    text = stringResource(R.string.related_info) + " : ",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = addressClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.maps),
+                        contentDescription = "Location icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    val fontSize = if (restaurant.Address.length > 20) 16.sp else 24.sp
+                    Text(
+                        text = restaurant.Address,
+                        fontSize = fontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = phoneNumberClick)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.call),
+                        contentDescription = "Phone icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text(
+                        text = phoneNumber,
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .fillMaxWidth(),
+                ) {
+                    if (restaurant.OpenTime != null) {
+                        Image(
+                            painter = painterResource(R.drawable.open),
+                            contentDescription = "Open sign icon",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(end = 8.dp)
+                        )
+                        Text(
+                            text = restaurant.OpenTime,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
-            Text(text = restaurant.RestaurantName)
         }
+
         item {
-            Text(text = restaurant.Address)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    text = stringResource(R.string.detailed_description) + " : ",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = restaurant.Description,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .background(Color(0xFFE0E0E0))
+                        .padding(16.dp)
+                )
+            }
         }
+
         item {
-            Text(text = restaurant.Phone)
-        }
-        item {
-            Text(text = restaurant.Description)
+            Text(
+                text = stringResource(R.string.data_update_date) + " : " + restaurant.UpdateTime,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0))
+                    .padding(16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                color = Color.Black
+            )
         }
         item {
             Text(text = "評論",)

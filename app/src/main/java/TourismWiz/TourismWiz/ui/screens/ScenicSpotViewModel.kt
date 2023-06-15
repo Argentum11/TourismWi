@@ -1,6 +1,7 @@
 package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.ScenicSpotApplication
+import TourismWiz.TourismWiz.data.City
 import TourismWiz.TourismWiz.data.ScenicSpotRepository
 import TourismWiz.TourismWiz.model.ScenicSpot
 import androidx.compose.runtime.getValue
@@ -28,14 +29,14 @@ class ScenicSpotViewModel(private val scenicSpotRepository: ScenicSpotRepository
     private var reachableScenicSpot : MutableSet<String> = mutableSetOf()
 
     init{
-        getScenicSpots()
+        getScenicSpots(city = City.defaultCity)
     }
 
-    fun getScenicSpots(){
+    fun getScenicSpots(city: String){
         viewModelScope.launch{
             scenicSpotUiState = ScenicSpotUiState.Loading
             scenicSpotUiState = try {
-                ScenicSpotUiState.Success(scenicSpotRepository.getScenicSpots())
+                ScenicSpotUiState.Success(scenicSpotRepository.getScenicSpots(city = city))
             } catch (error: IOException){
                 ScenicSpotUiState.Error
             } catch (error: HttpException){

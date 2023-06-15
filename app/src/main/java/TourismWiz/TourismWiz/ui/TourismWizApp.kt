@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -83,23 +84,59 @@ fun TourismWizApp() {
                 .padding(padding),
             color = MaterialTheme.colors.background
         ) {
+            val contextForToast = LocalContext.current.applicationContext
+
             when (selectedScreenIndex.value) {
                 0 -> {
+                    var selectedCityForHotel by remember {
+                        mutableStateOf(City.defaultCity)
+                    }
                     val hotelViewModel: HotelViewModel = viewModel(factory = HotelViewModel.Factory)
-                    HotelScreen(
-                        hotelUiState = hotelViewModel.hotelUiState,
-                        retryAction = hotelViewModel::getHotels
-                    )
+
+                    Column {
+                        CitySelector(
+                            selectedCity = selectedCityForHotel,
+                            onCitySelected = { city ->
+                                selectedCityForHotel = city
+                                Toast.makeText(
+                                    contextForToast,
+                                    contextForToast.getText(City.getStringId(city)),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                hotelViewModel.getHotels(selectedCityForHotel)
+                            }
+                        )
+                        HotelScreen(
+                            hotelUiState = hotelViewModel.hotelUiState,
+                            retryAction = { hotelViewModel.getHotels(selectedCityForHotel) }
+                        )
+                    }
                 }
                 1 -> {
-
+                    var selectedCityForScenicSpot by remember {
+                        mutableStateOf(City.defaultCity)
+                    }
                     val scenicSpotViewModel: ScenicSpotViewModel =
                         viewModel(factory = ScenicSpotViewModel.Factory)
-                    ScenicSpotScreen(
-                        scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
-                        retryAction = scenicSpotViewModel::getScenicSpots
-                    )
 
+                    Column{
+                        CitySelector(
+                            selectedCity = selectedCityForScenicSpot,
+                            onCitySelected = { city ->
+                                selectedCityForScenicSpot = city
+                                Toast.makeText(
+                                    contextForToast,
+                                    contextForToast.getText(City.getStringId(city)),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                scenicSpotViewModel.getScenicSpots(selectedCityForScenicSpot)
+                            }
+                        )
+                        ScenicSpotScreen(
+                            scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
+                            retryAction = {scenicSpotViewModel.getScenicSpots(selectedCityForScenicSpot)}
+                        )
+                    }
                 }
                 2 -> {
                     val restaurantViewModel: RestaurantViewModel =
@@ -107,15 +144,11 @@ fun TourismWizApp() {
                     var selectedCity by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchText by remember { mutableStateOf("") }
-                    var expanded by remember { mutableStateOf(false) }
+
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
-                    val contextForToast = LocalContext.current.applicationContext
                     Column {
                         CitySelector(
-                            expanded = expanded,
-                            onExpandedChange = { isExpanded -> expanded = isExpanded },
                             selectedCity = selectedCity,
                             onCitySelected = { city ->
                                 selectedCity = city
@@ -124,18 +157,10 @@ fun TourismWizApp() {
                                     contextForToast.getText(City.getStringId(city)),
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                expanded = false
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
                         )
-                        TextField(
-                            value = searchText,
-                            onValueChange = { newValue -> searchText = newValue },
-                            label = { Text(stringResource(R.string.keyword)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        )
+
                         Row {
                             Button(onClick = {
                                 if (pageNumber >= 2) {
@@ -151,20 +176,29 @@ fun TourismWizApp() {
                             }) {
                                 Text(text = "previous")
                             }
-                            Text(text = pageNumber.toString())
-                            Button(onClick = {
-                                if(pageNumber * numberOfDataInOnePage < restaurantTotal){
-                                    pageNumber += 1
-                                    restaurantViewModel.getRestaurants(selectedCity, pageNumber)
-                                } else {
-                                    Toast.makeText(
-                                        contextForToast,
-                                        contextForToast.getText(R.string.noNextPage),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }) {
-                                Text(text = "next")
+
+                            Text(
+                                text = pageNumber.toString(),
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Button(
+                                onClick = {
+                                    if (pageNumber * numberOfDataInOnePage < restaurantTotal) {
+                                        pageNumber += 1
+                                        restaurantViewModel.getRestaurants(selectedCity, pageNumber)
+                                    } else {
+                                        Toast.makeText(
+                                            contextForToast,
+                                            contextForToast.getText(R.string.noNextPage),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(text = ">>")
                             }
                         }
                         RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
@@ -173,7 +207,7 @@ fun TourismWizApp() {
                                     selectedCity,
                                     pageNumber
                                 )
-                            }, searchText = searchText,
+                            },
                             onTotalUpdated = { total ->
                                 restaurantTotal = total
                             }
@@ -191,11 +225,11 @@ fun TourismWizApp() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CitySelector(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
     selectedCity: String,
     onCitySelected: (String) -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    val onExpandedChange = { isExpanded: Boolean -> expanded = isExpanded }
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
         TextField(
             stringResource(id = City.getStringId(selectedCity)),
@@ -212,6 +246,7 @@ fun CitySelector(
             citiesForRestaurant.forEach { selectedOption ->
                 DropdownMenuItem(onClick = {
                     onCitySelected(selectedOption)
+                    expanded = false
                 }) {
                     Text(text = stringResource(id = City.getStringId(selectedOption)))
                 }
