@@ -3,6 +3,35 @@
     <string name="retry">重新搜尋</string>
     <string name="search_failed">搜尋失敗</string>
     <string name="error">error</string>
+    //FireBase
+    <string name="create_s">創建成功</string>
+    <string name="create_too_short">密碼最少需要六個字</string>
+    <string name="login_s">登入成功</string>
+    <string name="login_f">登入失敗</string>
+    <string name="change_name_s">更改暱稱成功</string>
+    <string name="change_name_f">更改暱稱失敗 請稍後再試</string>
+    //LoginScreen
+    <string name="login_email">帳號(email)</string>
+    <string name="login_password">密碼</string>
+    <string name="login_btn_Login">登入</string>
+    <string name="login_btn_Register">註冊</string>
+    <string name="field_toast">欄位不得為空</string>
+    //Personal Information
+    <string name="before_Login_mes">請先進行登入</string>
+    <string name="before_btn">登入</string>
+    <string name="display_name">暱稱</string>
+    <string name="display_email">帳號(email)</string>
+    <string name="change_name_btn">修改暱稱</string>
+    <string name="logout_btn">登出</string>
+    //Change name ui
+    <string name="new_name">暱稱</string>
+    <string name="change_btn">更新</string>
+    //Comment
+    //<string name="comment_title">評論</string>
+    <string name="dropdown_title">評分</string>
+    <string name="dropdown_default">請選擇</string>
+    <string name="comment">評論</string>
+    <string name="comment_send">送出</string>
     //city
     <string name="city">城市</string>
     <string name="taipei">臺北市</string>

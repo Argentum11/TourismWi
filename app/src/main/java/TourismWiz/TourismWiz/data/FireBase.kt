@@ -1,5 +1,6 @@
 package TourismWiz.TourismWiz.data
 
+import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.model.ScenicSpot
@@ -8,11 +9,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.*
-import com.google.android.gms.tasks.OnSuccessListener
+import androidx.compose.ui.res.stringResource
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -24,7 +23,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import java.util.concurrent.Executor
-
 class FireBase {
     companion object {
         val gson = Gson()
@@ -45,7 +43,7 @@ class FireBase {
             val createInTask = auth.createUserWithEmailAndPassword(account, password)
             return createInTask.continueWithTask { createTask ->
                 if (createTask.isSuccessful) {
-                    Toast.makeText(context, "Create account successful", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, context.getString(R.string.create_s), Toast.LENGTH_SHORT)
                         .show()
                     Log.d("FireBaseRelated", "createUserWithEmail:success")
                     // 登入操作
@@ -54,7 +52,7 @@ class FireBase {
                     if (password.length < 6) {
                         Toast.makeText(
                             context,
-                            "password need 6 word at least!",
+                            context.getString(R.string.create_too_short),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -76,11 +74,11 @@ class FireBase {
             val signInTask = auth.signInWithEmailAndPassword(account, password)
             signInTask.addOnCompleteListener(fireBaseExecutor) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.login_s), Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", "loginUserWithEmail:success")
                     MyUser.password=password
                 } else {
-                    Toast.makeText(context, "User not found or password mismatch", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.login_f), Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", task.exception?.localizedMessage!!)
                 }
             }
@@ -258,20 +256,19 @@ class FireBase {
             MyUser.user?.updateProfile(profileUpdates)
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(context, "change name successful!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.change_name_s), Toast.LENGTH_SHORT).show()
                         MyUser.user!!.email?.let { updateComment(it,name) }
                         MyUser.user!!.email?.let { MyUser.password?.let { it1 ->
                             loginAccount(it,it1,context)?.addOnCompleteListener{ task ->
                                 if (task.isSuccessful) {
                                     MyUser.user = task.result
                                 } else {
-                                    Toast.makeText(context, "something wrong, try again later!", Toast.LENGTH_SHORT).show()
                                     MyUser.user = null
                                 }
                             }
                         } }
                     } else {
-                        Toast.makeText(context, "change name fail! please try again later", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.change_name_f), Toast.LENGTH_SHORT).show()
                     }
                 }
         }

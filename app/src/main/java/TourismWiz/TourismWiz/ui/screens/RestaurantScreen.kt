@@ -395,9 +395,6 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
                 color = Color.Black
             )
         }
-        item {
-            Text(text = "評論",)
-        }
         items(commentList) { comment ->
             Column {
                 Text("${comment.name}")

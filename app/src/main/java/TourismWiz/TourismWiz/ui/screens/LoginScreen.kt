@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import com.google.firebase.firestore.DocumentSnapshot
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
@@ -36,6 +37,7 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit)
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val toast_mes= stringResource(id = R.string.field_toast)
     Column {
         IconButton(
                 onClick = {
@@ -148,14 +150,14 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit)
                                 .align(Alignment.CenterHorizontally),
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text(text = "Email") }
+                            label = { Text(text = stringResource(id = R.string.login_email)) }
                         )
                         OutlinedTextField(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally),
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text(text = "Password") },
+                            label = { Text(text = stringResource(id = R.string.login_password)) },
                             visualTransformation = PasswordVisualTransformation()
                         )
                         Row(
@@ -179,14 +181,14 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit)
                                     } else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Login")
+                                Text(text = stringResource(id = R.string.login_btn_Login))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                             Button(
@@ -201,14 +203,14 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit)
                                     else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Register")
+                                Text(text = stringResource(id = R.string.login_btn_Register))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                         }

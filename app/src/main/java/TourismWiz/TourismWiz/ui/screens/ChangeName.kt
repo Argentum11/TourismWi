@@ -26,6 +26,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+
 @Composable
 fun ChangeName() {
     var name by remember { mutableStateOf("") }
@@ -37,6 +39,7 @@ fun ChangeName() {
     var isLoggedIn by remember { mutableStateOf(MyUser.user != null) }
     var isLoginDialogVisible by remember { mutableStateOf(false) }
     var isChange by remember { mutableStateOf(false) }
+    val toast_mes= stringResource(id = R.string.field_toast)
 
     if (!isLoggedIn) {
         Column(
@@ -44,9 +47,9 @@ fun ChangeName() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("請先進行登入!")
+            Text(stringResource(id = R.string.before_Login_mes))
             Button(onClick = { isLoginDialogVisible = true }) {
-                Text(text = "登入")
+                Text(text = stringResource(id = R.string.before_btn))
             }
         }
     } else {
@@ -55,17 +58,17 @@ fun ChangeName() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "名字 : "+ displayName ?: "")
-            Text(text = "帳號 : $displayEmail")
+            Text(text = stringResource(id = R.string.display_name)+" : "+ displayName ?: "")
+            Text(text = stringResource(id = R.string.display_email)+" : "+displayEmail)
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {  isChange = true }) {
-                Text(text = "修改名字")
+                Text(text = stringResource(id = R.string.change_name_btn))
             }
             Button(onClick = {
                 MyUser.user = null
                 isLoggedIn = false
             }) {
-                Text(text = "登出")
+                Text(text = stringResource(id = R.string.logout_btn))
             }
         }
     }
@@ -106,7 +109,7 @@ fun ChangeName() {
                                 .align(Alignment.CenterHorizontally),
                             value = name,
                             onValueChange = { name = it },
-                            label = { Text(text = "Name") }
+                            label = { Text(text = stringResource(id = R.string.new_name)) }
                         )
                         Button(
                             onClick = {
@@ -121,14 +124,14 @@ fun ChangeName() {
                                 } else {
                                     Toast.makeText(
                                         context,
-                                        "Name field must have a value",
+                                        toast_mes,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
                                 ,modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "修改")
+                            Text(text = stringResource(id = R.string.change_btn))
                         }
                     }
                 }
@@ -174,14 +177,14 @@ fun ChangeName() {
                                 .align(Alignment.CenterHorizontally),
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text(text = "Email") }
+                            label = { Text(text = stringResource(id = R.string.login_email)) }
                         )
                         OutlinedTextField(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally),
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text(text = "Password") },
+                            label = { Text(text = stringResource(id = R.string.login_password)) },
                             visualTransformation = PasswordVisualTransformation()
                         )
                         Row(
@@ -208,14 +211,14 @@ fun ChangeName() {
                                     } else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Login")
+                                Text(text = stringResource(id = R.string.login_btn_Login))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                             Button(
@@ -234,14 +237,14 @@ fun ChangeName() {
                                     else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Register")
+                                Text(text = stringResource(id = R.string.login_btn_Register))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                         }

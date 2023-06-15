@@ -43,6 +43,8 @@ fun CommentAdd(id:String) {
     val focusManager = LocalFocusManager.current
     val inExpandedChange={isExpanded:Boolean->expanded=isExpanded}
     val stars=listOf("","✰","✰✰","✰✰✰","✰✰✰✰","✰✰✰✰✰")
+    val toast_mes= stringResource(id = R.string.field_toast)
+
     Column {
         IconButton(
             onClick = {
@@ -103,14 +105,14 @@ fun CommentAdd(id:String) {
                                 .align(Alignment.CenterHorizontally),
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text(text = "Email") }
+                            label = { Text(text = stringResource(id = R.string.login_email)) }
                         )
                         OutlinedTextField(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally),
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text(text = "Password") },
+                            label = { Text(text = stringResource(id = R.string.login_password)) },
                             visualTransformation = PasswordVisualTransformation()
                         )
                         Row(
@@ -134,14 +136,14 @@ fun CommentAdd(id:String) {
                                     } else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Login")
+                                Text(text = stringResource(id = R.string.login_btn_Login))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                             Button(
@@ -156,14 +158,14 @@ fun CommentAdd(id:String) {
                                     else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Register")
+                                Text(text = stringResource(id = R.string.login_btn_Register))
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                         }
@@ -210,10 +212,10 @@ fun CommentAdd(id:String) {
                         }
                         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = inExpandedChange) {
                             TextField(
-                                if(rate=="") "請選擇" else stars[rate.toInt()],
+                                if(rate=="") stringResource(id = R.string.dropdown_default) else stars[rate.toInt()],
                                 {},
                                 readOnly = true,
-                                label = { Text(text = "評分") },
+                                label = { Text(text = stringResource(id = R.string.dropdown_title)) },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 modifier = Modifier.fillMaxWidth()
@@ -234,7 +236,7 @@ fun CommentAdd(id:String) {
                                 .align(Alignment.CenterHorizontally),
                             value = comment,
                             onValueChange = { comment = it },
-                            label = { Text(text = "Comment") },
+                            label = { Text(text = stringResource(id = R.string.comment)) },
                         )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -255,7 +257,7 @@ fun CommentAdd(id:String) {
                                     else
                                         Toast.makeText(
                                             context,
-                                            "field must have value",
+                                            toast_mes,
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
@@ -263,7 +265,7 @@ fun CommentAdd(id:String) {
                                 modifier = Modifier.fillMaxWidth()
                             )
                             {
-                                Text(text = "Send")
+                                Text(text = stringResource(id = R.string.comment_send))
                             }
                         }
                     }

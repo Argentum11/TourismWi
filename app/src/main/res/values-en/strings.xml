@@ -3,6 +3,35 @@
     <string name="retry">Retry</string>
     <string name="search_failed">Search failed</string>
     <string name="error">error</string>
+    //FireBase
+    <string name="create_s">create account success</string>
+    <string name="create_too_short">password requires at least 6 characters</string>
+    <string name="login_s">login success</string>
+    <string name="login_f">login fail</string>
+    <string name="change_name_s">update name success</string>
+    <string name="change_name_f">update name fail, please try again later</string>
+    //LoginScreen
+    <string name="login_email">account(email)</string>
+    <string name="login_password">password</string>
+    <string name="login_btn_Login">Login</string>
+    <string name="login_btn_Register">Register</string>
+    <string name="field_toast">Field cannot be empty</string>
+    //Personal Information
+    <string name="before_Login_mes">Please Login first</string>
+    <string name="before_btn">Login</string>
+    <string name="display_name">name</string>
+    <string name="display_email">account(email)</string>
+    <string name="change_name_btn">change name</string>
+    <string name="logout_btn">Logout</string>
+    //Change name ui
+    <string name="new_name">name</string>
+    <string name="change_btn">Update</string>
+    //Comment
+    //<string name="comment_title">Comment</string>
+    <string name="dropdown_title">rating</string>
+    <string name="dropdown_default">please select</string>
+    <string name="comment">Comment</string>
+    <string name="comment_send">Send Comment</string>
     //city
     <string name="city">City</string>
     <string name="taipei">Taipei</string>
