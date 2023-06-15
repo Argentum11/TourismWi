@@ -55,7 +55,7 @@ class NetworkRestaurantRepository(private val restaurantApiService: RestaurantAp
         getToken()
         delay(2000)
         val skippedData = (pageNumber-1) * numberOfDataInOnePage
-        return restaurantApiService.getRestaurants(city, dataInPage = numberOfDataInOnePage, skippedData = skippedData, headers)
+        return restaurantApiService.getRestaurants(city, dataInPage = 100, skippedData = 0, headers)
     }
 }
 
