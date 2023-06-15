@@ -26,18 +26,53 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.runBlocking
+
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
-fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit) {
+fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : (MutableList<Any>) -> Unit) {
     var isLoginDialogVisible by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val toast_mes= stringResource(id = R.string.field_toast)
+    var icon = painterResource(R.drawable.heart)
+    if(myItem==null){
+        if(!show)
+            icon = painterResource(R.drawable.heart)
+        else
+            icon = painterResource(R.drawable.holo)
+    }else{
+        icon=painterResource(R.drawable.bookmark_add)
+        if(field=="Restaurant") {
+            for(i in MyUser.restaurantList){
+                if((myItem as Restaurant).RestaurantID==i.RestaurantID){
+                    icon=painterResource(R.drawable.bookmark_remove)
+                    break
+                }
+            }
+        }else if(field=="Hotel"){
+            for(i in MyUser.hotelList){
+                if((myItem as Hotel).HotelID==i.HotelID){
+                    icon=painterResource(R.drawable.bookmark_remove)
+                    break
+                }
+            }
+        }else{
+            for(i in MyUser.scenicspotList){
+                if((myItem as ScenicSpot).ScenicSpotID==i.ScenicSpotID){
+                    icon=painterResource(R.drawable.bookmark_remove)
+                    break
+                }
+            }
+        }
+
+    }
     Column {
         IconButton(
                 onClick = {
@@ -101,11 +136,11 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Any>) -> Unit)
                     }
             }) {
             Image(
-                painter = painterResource(R.drawable.heart),
+                painter = icon,
                 contentDescription = "Heart Icon",
                 modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
+                    .width(50.dp)
+                    .height(50.dp)
             )
         }
     }

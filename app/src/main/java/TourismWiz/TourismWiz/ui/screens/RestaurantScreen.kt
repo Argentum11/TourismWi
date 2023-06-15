@@ -61,7 +61,7 @@ fun RestaurantScreen(
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
-                                LoginScreen(field = "Restaurant", myItem = null, saveList = {
+                                LoginScreen(field = "Restaurant", myItem = null,show=isShow, saveList = {
                                     fav_list = it as MutableList<Restaurant>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -94,7 +94,7 @@ fun RestaurantScreen(
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
-                                LoginScreen(field = "Restaurant", myItem = null, saveList = {
+                                LoginScreen(field = "Restaurant", myItem = null,show=isShow, saveList = {
                                     fav_list = it as MutableList<Restaurant>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -248,6 +248,7 @@ fun RestaurantCard(
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
     val commentList = CommentList(id = restaurant.RestaurantID)
+    Log.d("FireBaseRelated","trash")
     val context = LocalContext.current
     val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
     val phoneNumberClick: () -> Unit = {
@@ -268,7 +269,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             .padding(16.dp)
     ) {
         item {
-            LoginScreen(field = "Restaurant", myItem = restaurant, saveList = {})
+            LoginScreen(field = "Restaurant", myItem = restaurant,false, saveList = {})
         }
         item {
             CommentAdd(id = restaurant.RestaurantID)

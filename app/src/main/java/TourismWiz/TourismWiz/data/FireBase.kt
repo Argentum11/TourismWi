@@ -77,6 +77,33 @@ class FireBase {
                     Toast.makeText(context, context.getString(R.string.login_s), Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", "loginUserWithEmail:success")
                     MyUser.password=password
+                    getFavorite(account,"Restaurant"){
+                        for (i in it) {
+                            val r: Restaurant = gson.fromJson(
+                                i.get("item").toString(),
+                                Restaurant::class.java
+                            )
+                            MyUser.restaurantList.add(r)
+                        }
+                    }
+                    getFavorite(account,"Hotel"){
+                        for (i in it) {
+                            val r: Hotel = gson.fromJson(
+                                i.get("item").toString(),
+                                Hotel::class.java
+                            )
+                            MyUser.hotelList.add(r)
+                        }
+                    }
+                    getFavorite(account,"ScenicSpot"){
+                        for (i in it) {
+                            val r: ScenicSpot = gson.fromJson(
+                                i.get("item").toString(),
+                                ScenicSpot::class.java
+                            )
+                            MyUser.scenicspotList.add(r)
+                        }
+                    }
                 } else {
                     Toast.makeText(context, context.getString(R.string.login_f), Toast.LENGTH_SHORT).show()
                     Log.d("FireBaseRelated", task.exception?.localizedMessage!!)
@@ -192,6 +219,7 @@ class FireBase {
                 getFavorite(it, field) { result ->
                     var flag=true
                     var id:String?=null
+                    var item_id:String?=null
                     Log.d("FireBaseRelated", item.toString())
                     if(field=="Restaurant") {
                         for (i in result) {
@@ -203,6 +231,7 @@ class FireBase {
                             if (r.RestaurantID == (item as Restaurant).RestaurantID) {
                                 flag = false
                                 id = i.id
+                                item_id=r.RestaurantID
                                 break
                             }
                         }
@@ -216,6 +245,7 @@ class FireBase {
                             if (r.HotelID == (item as Hotel).HotelID) {
                                 flag = false
                                 id = i.id
+                                item_id=r.HotelID
                                 break
                             }
                         }
@@ -229,14 +259,31 @@ class FireBase {
                             if (r.ScenicSpotID == (item as ScenicSpot).ScenicSpotID) {
                                 flag = false
                                 id = i.id
+                                item_id=r.ScenicSpotID
                                 break
                             }
                         }
                     }
-                    if (flag)
+                    if (flag) {
                         addData(email, input)
-                    else
-                        deleteData(email,id!!)
+                        if(field=="Restaurant") {
+                            MyUser.restaurantList.add(item as Restaurant)
+                        }else if(field=="Hotel"){
+                            MyUser.hotelList.add(item as Hotel)
+                        }else{
+                            MyUser.scenicspotList.add(item as ScenicSpot)
+                        }
+                    }
+                    else {
+                        if(field=="Restaurant") {
+                            MyUser.restaurantList.removeAll{it.RestaurantID==item_id!!}
+                        }else if(field=="Hotel"){
+                            MyUser.hotelList.removeAll{it.HotelID==item_id!!}
+                        }else{
+                            MyUser.scenicspotList.removeAll{it.ScenicSpotID==item_id!!}
+                        }
+                        deleteData(email, id!!)
+                    }
                 }
             }
         }

@@ -57,7 +57,7 @@ fun ScenicSpotScreen(
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
-                                LoginScreen(field = "ScenicSpot", myItem = null, saveList = {
+                                LoginScreen(field = "ScenicSpot", myItem = null,isShow, saveList = {
                                     fav_list = it as MutableList<ScenicSpot>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -88,7 +88,7 @@ fun ScenicSpotScreen(
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
-                                LoginScreen(field = "ScenicSpot", myItem = null, saveList = {
+                                LoginScreen(field = "ScenicSpot", myItem = null,isShow, saveList = {
                                     fav_list = it as MutableList<ScenicSpot>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -238,7 +238,7 @@ fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
             .padding(16.dp)
     ) {
         item {
-            LoginScreen(field = "ScenicSpot", myItem = scenicSpot, saveList = {})
+            LoginScreen(field = "ScenicSpot", myItem = scenicSpot,false, saveList = {})
         }
         item {
             CommentAdd(id = scenicSpot.ScenicSpotID)

@@ -51,7 +51,6 @@ fun HotelScreen(
     var selectedHotelId by remember { mutableStateOf("") }
     var fav_list by remember { mutableStateOf(mutableListOf<Hotel>()) }
     var isShow by remember { mutableStateOf(false)}
-
     when(isShow){
         true->{
             when (hotelUiState) {
@@ -61,7 +60,7 @@ fun HotelScreen(
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
-                                LoginScreen(field = "Hotel", myItem = null, saveList = {
+                                LoginScreen(field = "Hotel", myItem = null,isShow, saveList = {
                                     fav_list = it as MutableList<Hotel>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -95,7 +94,7 @@ fun HotelScreen(
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
-                                LoginScreen(field = "Hotel", myItem = null, saveList = {
+                                LoginScreen(field = "Hotel", myItem = null,isShow, saveList = {
                                     fav_list = it as MutableList<Hotel>
                                     isShow = isShow == false
                                     Log.d("FireBaseRelated", "true in" + isShow.toString())
@@ -241,7 +240,7 @@ fun HotelDetailScreen(hotel: Hotel) {
             .padding(16.dp)
     ) {
         item {
-            LoginScreen(field = "Hotel", myItem = hotel, saveList = {})
+            LoginScreen(field = "Hotel", myItem = hotel,false, saveList = {})
         }
         item {
             CommentAdd(id = hotel.HotelID)
