@@ -1,4 +1,4 @@
-package TourismWiz.TourismWiz.ui.screens
+package TourismWiz.TourismWiz.data
 
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.FireBase
@@ -9,6 +9,7 @@ import TourismWiz.TourismWiz.model.Restaurant
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -25,48 +26,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import com.google.firebase.firestore.DocumentSnapshot
-//callback: (result: MutableList<Restaurant>) -> Unit
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -> Unit) {
+fun CommentAdd(id:String) {
+    val options = listOf(1,2,3,4,5)
+    var expanded by remember { mutableStateOf(false) }
     var isLoginDialogVisible by remember { mutableStateOf(false) }
+    var isCommentDialogVisible by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var rate by remember { mutableStateOf("") }
+    var comment by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val inExpandedChange={isExpanded:Boolean->expanded=isExpanded}
+    val stars=listOf("","✰","✰✰","✰✰✰","✰✰✰✰","✰✰✰✰✰")
     Column {
         IconButton(
-                onClick = {
-                    if (user!=null) {
-                        if(myItem==null) {
-                            if(field=="Restaurant") {
-                                var ml = mutableListOf<Restaurant>()
-                                user?.email?.let {
-                                    FireBase.getFavorite(it, field) {
-                                        for (i in it) {
-                                            val r: Restaurant = gson.fromJson(
-                                                i.get("item").toString(),
-                                                Restaurant::class.java
-                                            )
-                                            //Log.d("FireBaseRelated",i.toString())
-                                            ml.add(r)
-                                        }
-                                        //Log.d("FireBaseRelated",ml.toString())
-                                        saveList(ml)
-                                    }
-                                }
-                            }
-                        }else{
-                            if(field=="Restaurant")
-                                user?.email?.let { FireBase.addFavorite(it,field,myItem) }
-                        }
-                    }
-                    else {
-                        isLoginDialogVisible = true
-                    }
+            onClick = {
+                if (user!=null) {
+                    isCommentDialogVisible = true
+                }
+                else {
+                    isLoginDialogVisible = true
+                }
             }) {
             Image(
-                painter = painterResource(R.drawable.heart),
+                painter = painterResource(R.drawable.wiz),
                 contentDescription = "Heart Icon",
                 modifier = Modifier
                     .width(30.dp)
@@ -184,4 +172,120 @@ fun LoginScreen(field:String, myItem:Any?,saveList : (MutableList<Restaurant>) -
             )
         }
     }
+    if(isCommentDialogVisible){
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        focusManager.clearFocus()
+                    }
+                }
+        ) {
+            AlertDialog(
+                onDismissRequest = {
+                    isCommentDialogVisible=false
+                    focusManager.clearFocus()
+                },
+                buttons = {
+                    Column() {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.6f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.wiz),
+                                contentDescription = "wiz",
+                                modifier = Modifier.fillMaxWidth()
+
+                            )
+                            Text(
+                                text = "Welcome",
+                                color = Color.White,
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = inExpandedChange) {
+                            TextField(
+                                if(rate=="") "請選擇" else stars[rate.toInt()],
+                                {},
+                                readOnly = true,
+                                label = { Text(text = "評分") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { inExpandedChange(false) }) {
+                                options.forEach { option ->
+                                    DropdownMenuItem(onClick = {
+                                        rate = option.toString()
+                                        inExpandedChange(false)
+                                    }) {
+                                        Text(text = stars[option])
+                                    }
+                                }
+                            }
+                        }
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            value = comment,
+                            onValueChange = { comment = it },
+                            label = { Text(text = "Comment") },
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            //Spacer(modifier = Modifier.width(16.dp))
+                            Button(
+                                onClick = {
+                                    if (rate != "" && comment != "") {
+                                        MyUser.user?.email?.let {
+                                            MyUser.user?.displayName?.let { it1 ->
+                                                FireBase.addComment(id,rate,
+                                                    it, it1,comment)
+                                            }
+                                        }
+                                        isCommentDialogVisible=false
+                                    }
+                                    else
+                                        Toast.makeText(
+                                            context,
+                                            "field must have value",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            {
+                                Text(text = "Send")
+                            }
+                        }
+                    }
+                }
+            )
+        }
+    }
 }
+/*
+Row {
+                            radioOptions.forEach { option ->
+                                Row(Modifier.padding(vertical = 4.dp)) {
+                                    RadioButton(
+                                        selected = (selectedOption.value == option),
+                                        onClick = { selectedOption.value = option }
+                                    )
+                                    Text(
+                                        text = option,
+                                        modifier = Modifier.
+                                    )
+                                }
+                            }
+                        }
+
+ */

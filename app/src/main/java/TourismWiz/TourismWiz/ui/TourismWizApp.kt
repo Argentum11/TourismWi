@@ -65,7 +65,7 @@ fun TourismWizApp() {
                     }
 
                     IconButton(
-                        onClick = { selectedScreenIndex.value = 2 },
+                        onClick = { selectedScreenIndex.value = 3 },
                         modifier = Modifier.size(24.dp) // 設定IconButton的大小為24dp
                     ) {
                         Image(
@@ -92,15 +92,14 @@ fun TourismWizApp() {
                     )
                 }
                 1 -> {
-                    /*
+
                     val scenicSpotViewModel: ScenicSpotViewModel =
                         viewModel(factory = ScenicSpotViewModel.Factory)
                     ScenicSpotScreen(
                         scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
                         retryAction = scenicSpotViewModel::getScenicSpots
                     )
-                    */
-                    ChangeName()
+
                 }
                 2 -> {
                     val restaurantViewModel: RestaurantViewModel =

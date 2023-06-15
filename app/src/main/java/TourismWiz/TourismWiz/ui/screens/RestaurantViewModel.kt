@@ -17,6 +17,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 sealed interface RestaurantUiState{
+
     data class Success(val restaurants: List<Restaurant>): RestaurantUiState
     object Error: RestaurantUiState
     object Loading: RestaurantUiState

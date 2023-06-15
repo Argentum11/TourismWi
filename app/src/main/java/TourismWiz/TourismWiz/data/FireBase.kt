@@ -43,13 +43,26 @@ class FireBase {
             val createInTask = auth.createUserWithEmailAndPassword(account, password)
             return createInTask.continueWithTask { createTask ->
                 if (createTask.isSuccessful) {
-                    Toast.makeText(context, "Create account successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Create account successful", Toast.LENGTH_SHORT)
+                        .show()
                     Log.d("FireBaseRelated", "createUserWithEmail:success")
                     // 登入操作
                     return@continueWithTask loginAccount(account, password, context)
                 } else {
-                    Toast.makeText(context, createTask.exception?.localizedMessage!!, Toast.LENGTH_SHORT)
-                        .show()
+                    if (password.length < 6) {
+                        Toast.makeText(
+                            context,
+                            "password need 6 word at least!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    else {
+                        Toast.makeText(
+                            context,
+                            createTask.exception?.localizedMessage!!,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     Log.d("FireBaseRelated", createTask.exception?.localizedMessage!!)
                     // 返回 null 表示註冊失敗
                     return@continueWithTask Tasks.forResult(null)
@@ -123,15 +136,18 @@ class FireBase {
                     Log.d("FireBaseRelated", "deleteDataWithField:$field,id:$id:fail")
                 }
         }
-        public fun addComment(name:String,comment:String){
+        public fun addComment(id:String,rate:String,email:String,name:String,comment:String){
             val input = hashMapOf(
+                "id" to id,
+                "rate" to rate,
+                "email" to email,
                 "name" to name,
                 "comment" to comment
             )
             addData("comment",input)
         }
-        public fun getComment(name:String,callback: (result: List<DocumentSnapshot>) -> Unit){
-            val ret = getData("comment",Pair("name",name)){result ->
+        public fun getComment(id:String,callback: (result: List<DocumentSnapshot>) -> Unit){
+            val ret = getData("comment",Pair("id",id)){result ->
                 if(result!=null){
                     callback(result.documents)
                 }else{
@@ -139,7 +155,35 @@ class FireBase {
                 }
             }
         }
-        public fun <T> addFavorite(email: String, field: String, item: T) {
+        private fun updateComment(email: String,name: String){
+            val db = FirebaseFirestore.getInstance()
+            val collectionRef = db.collection("comment")
+            val query = collectionRef.whereEqualTo("email", email)
+            query.get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val documentRef = collectionRef.document(document.id)
+                        val updates = hashMapOf<String, Any>(
+                            "id" to document.get("id").toString(),
+                            "email" to document.get("email").toString(),
+                            "name" to name,
+                            "comment" to document.get("comment").toString()
+                        )
+                        documentRef.update(updates)
+                            .addOnSuccessListener {
+                                Log.d("FireBaseRelated", "update_in:success")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.d("FireBaseRelated", "update_in:fail")
+                            }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("FireBaseRelated", "update:fail")
+                }
+            db.collection("comment").document()
+        }
+        public fun addFavorite(email: String, field: String, item: Any) {
             val input = hashMapOf(
                 "field" to field,
                 "item" to gson.toJson(item)
@@ -148,22 +192,29 @@ class FireBase {
                 getFavorite(it, field) { result ->
                     var flag=true
                     var id:String?=null
-                    for (i in result) {
-                        val r: Restaurant = gson.fromJson(
-                            i.get("item").toString(),
-                            Restaurant::class.java
-                        )
-                        if (r == item) {
-                            flag = false
-                            id=i.id
-                            break
+                    Log.d("FireBaseRelated", item.toString())
+                    if(field=="Restaurant") {
+                        for (i in result) {
+                            val r: Restaurant = gson.fromJson(
+                                i.get("item").toString(),
+                                Restaurant::class.java
+                            )
+                            Log.d("FireBaseRelated", r.toString())
+                            if (r.RestaurantID == (item as Restaurant).RestaurantID) {
+                                flag = false
+                                id = i.id
+                                break
+                            }
                         }
+                    }else if(field=="Hotel"){
+
+                    }else{
+
                     }
                     if (flag)
                         addData(email, input)
                     else
                         deleteData(email,id!!)
-
                 }
             }
         }
@@ -184,6 +235,7 @@ class FireBase {
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(context, "change name successful!", Toast.LENGTH_SHORT).show()
+                        MyUser.user!!.email?.let { updateComment(it,name) }
                         MyUser.user!!.email?.let { MyUser.password?.let { it1 ->
                             loginAccount(it,it1,context)?.addOnCompleteListener{ task ->
                                 if (task.isSuccessful) {
