@@ -9,7 +9,6 @@ import TourismWiz.TourismWiz.model.ScenicSpot
 import TourismWiz.TourismWiz.model.commentList
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +46,7 @@ fun ScenicSpotScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    var scenicSpots by remember { mutableStateOf(mutableListOf<ScenicSpot>()) }
     var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedScenicSpotId by remember { mutableStateOf("") }
     var first_tap by remember { mutableStateOf(true) }
@@ -60,13 +60,14 @@ fun ScenicSpotScreen(
                 is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
                 is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
                 is ScenicSpotUiState.Success -> {
+                    scenicSpots = MyUser.scenicspotList
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
                                 LoginScreen(field = "ScenicSpot", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
                                 })
-                                ScenicSpotGridScreen(scenicSpots = MyUser.scenicspotList,
+                                ScenicSpotGridScreen(scenicSpots = scenicSpots,
                                     modifier,
                                     onItemClick = { scenicSpot ->
                                         isShow=false
@@ -90,13 +91,14 @@ fun ScenicSpotScreen(
                 is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
                 is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
                 is ScenicSpotUiState.Success -> {
+                    scenicSpots = scenicSpotUiState.scenicSpots as MutableList<ScenicSpot>
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
                                 LoginScreen(field = "ScenicSpot", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
                                 })
-                                ScenicSpotGridScreen(scenicSpots = scenicSpotUiState.scenicSpots,
+                                ScenicSpotGridScreen(scenicSpots = scenicSpots,
                                     modifier,
                                     onItemClick = { scenicSpot ->
                                         isShow=false

@@ -49,6 +49,7 @@ fun RestaurantScreen(
     onTotalUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
+    var restaurants by remember { mutableStateOf(mutableListOf<Restaurant>()) }
     var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedRestaurantId by remember { mutableStateOf("") }
     var first_tap by remember { mutableStateOf(true) }
@@ -62,6 +63,7 @@ fun RestaurantScreen(
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
                 is RestaurantUiState.Success -> {
+                    restaurants = MyUser.restaurantList
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
@@ -73,7 +75,7 @@ fun RestaurantScreen(
                                         isShow = isShow == false
                                     })
                                 RestaurantGridScreen(
-                                    restaurants = MyUser.restaurantList,
+                                    restaurants = restaurants,
                                     onTotalUpdated = onTotalUpdated,
                                     onItemClick = { restaurant ->
                                         isShow=false
@@ -98,6 +100,7 @@ fun RestaurantScreen(
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
                 is RestaurantUiState.Success -> {
+                    restaurants = restaurantUiState.restaurants as MutableList<Restaurant>
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
@@ -109,7 +112,7 @@ fun RestaurantScreen(
                                         isShow = isShow == false
                                     })
                                 RestaurantGridScreen(
-                                    restaurants = restaurantUiState.restaurants,
+                                    restaurants = restaurants,
                                     onTotalUpdated = onTotalUpdated,
                                     onItemClick = { restaurant ->
                                         isShow=false

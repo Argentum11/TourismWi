@@ -9,7 +9,6 @@ import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.commentList
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +49,7 @@ fun HotelScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    var hotels by remember { mutableStateOf(mutableListOf<Hotel>()) }
     var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedHotelId by remember { mutableStateOf("") }
     var first_tap by remember { mutableStateOf(true) }
@@ -63,6 +63,7 @@ fun HotelScreen(
                 is HotelUiState.Loading -> LoadingScreen(modifier)
                 is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
                 is HotelUiState.Success -> {
+                    hotels = MyUser.hotelList
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
@@ -70,7 +71,7 @@ fun HotelScreen(
                                     isShow = isShow == false
                                 })
                                 HotelGridScreen(
-                                    hotels = MyUser.hotelList,
+                                    hotels = hotels,
                                     modifier,
                                     onItemClick = { hotel ->
                                         isShow=false
@@ -95,6 +96,7 @@ fun HotelScreen(
                 is HotelUiState.Loading -> LoadingScreen(modifier)
                 is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
                 is HotelUiState.Success -> {
+                    hotels = hotelUiState.hotels as MutableList<Hotel>
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
@@ -102,7 +104,7 @@ fun HotelScreen(
                                     isShow = isShow == false
                                 })
                                 HotelGridScreen(
-                                    hotels = hotelUiState.hotels,
+                                    hotels = hotels,
                                     modifier,
                                     onItemClick = { hotel ->
                                         isShow=false
