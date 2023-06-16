@@ -89,10 +89,6 @@ fun TourismWizApp() {
                     var selectedCityForHotel by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchQueryForHotel by remember { mutableStateOf("") }
-                    val derivedSearchQueryForHotel = remember(searchQueryForHotel) {
-                        derivedStateOf { searchQueryForHotel }
-                    }
                     val hotelViewModel: HotelViewModel = viewModel(factory = HotelViewModel.Factory)
 
                     Column {
@@ -108,15 +104,9 @@ fun TourismWizApp() {
                                 hotelViewModel.getHotels(selectedCityForHotel)
                             }
                         )
-                        SearchTextField(
-                            searchQuery = searchQueryForHotel,
-                            onSearchQueryChange = { query -> searchQueryForHotel = query },
-                            onClearSearchQuery = { searchQueryForHotel = "" }
-                        )
                         HotelScreen(
                             hotelUiState = hotelViewModel.hotelUiState,
-                            retryAction = { hotelViewModel.getHotels(selectedCityForHotel) },
-                            keyword = derivedSearchQueryForHotel.value
+                            retryAction = { hotelViewModel.getHotels(selectedCityForHotel) }
                         )
                     }
                 }
@@ -124,14 +114,10 @@ fun TourismWizApp() {
                     var selectedCityForScenicSpot by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchQueryForScenicSpot by remember { mutableStateOf("") }
-                    val derivedSearchQueryForScenicSpot = remember(searchQueryForScenicSpot) {
-                        derivedStateOf { searchQueryForScenicSpot }
-                    }
                     val scenicSpotViewModel: ScenicSpotViewModel =
                         viewModel(factory = ScenicSpotViewModel.Factory)
 
-                    Column {
+                    Column{
                         CitySelector(
                             selectedCity = selectedCityForScenicSpot,
                             onCitySelected = { city ->
@@ -144,18 +130,9 @@ fun TourismWizApp() {
                                 scenicSpotViewModel.getScenicSpots(selectedCityForScenicSpot)
                             }
                         )
-                        SearchTextField(
-                            searchQuery = searchQueryForScenicSpot,
-                            onSearchQueryChange = { query -> searchQueryForScenicSpot = query },
-                            onClearSearchQuery = { searchQueryForScenicSpot = "" }
-                        )
                         ScenicSpotScreen(
                             scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
-                            retryAction = {
-                                scenicSpotViewModel.getScenicSpots(
-                                    selectedCityForScenicSpot
-                                )
-                            }
+                            retryAction = {scenicSpotViewModel.getScenicSpots(selectedCityForScenicSpot)}
                         )
                     }
                 }
@@ -165,10 +142,7 @@ fun TourismWizApp() {
                     var selectedCity by remember {
                         mutableStateOf(City.defaultCity)
                     }
-                    var searchQueryForHotel by remember { mutableStateOf("") }
-                    val derivedSearchQueryForHotel = remember(searchQueryForHotel) {
-                        derivedStateOf { searchQueryForHotel }
-                    }
+
                     var pageNumber by remember { mutableStateOf(1) }
                     var restaurantTotal by remember { mutableStateOf(0) }
                     Column {
@@ -183,11 +157,6 @@ fun TourismWizApp() {
                                 ).show()
                                 restaurantViewModel.getRestaurants(selectedCity, pageNumber)
                             }
-                        )
-                        SearchTextField(
-                            searchQuery = searchQueryForHotel,
-                            onSearchQueryChange = { query -> searchQueryForHotel = query },
-                            onClearSearchQuery = { searchQueryForHotel = "" }
                         )
                         RestaurantScreen(restaurantUiState = restaurantViewModel.restaurantUiState,
                             retryAction = {
@@ -218,11 +187,7 @@ fun CitySelector(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val onExpandedChange = { isExpanded: Boolean -> expanded = isExpanded }
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
-        modifier = Modifier.padding(start = 15.dp)
-    ) {
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
         TextField(
             stringResource(id = City.getStringId(selectedCity)),
             {},

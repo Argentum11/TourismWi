@@ -166,9 +166,20 @@ fun RestaurantGridScreen(
     onTotalUpdated: (Int) -> Unit,
     onItemClick: (Restaurant) -> Unit
 ) {
+    var filteredRestaurants = remember { mutableStateListOf<Restaurant>() }
+    var searchQuery by remember { mutableStateOf("") }
     var total by remember { mutableStateOf(restaurants.size) }
 
     Column(modifier = modifier.fillMaxWidth()) {
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = {
+                searchQuery = ""
+                total = restaurants.size
+            }
+        )
+
         when (total) {
             0 -> NoResult()
             else -> {
@@ -179,9 +190,16 @@ fun RestaurantGridScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    total = restaurants.size
+                    filteredRestaurants.clear()
+                    filteredRestaurants.addAll(
+                        restaurants.filter { restaurant ->
+                            restaurant.RestaurantName.contains(searchQuery, ignoreCase = true) ||
+                                    restaurant.Description.contains(searchQuery, ignoreCase = true)
+                        }
+                    )
+                    total = filteredRestaurants.size
                     items(
-                        items = restaurants,
+                        items = filteredRestaurants,
                         key = { restaurant -> restaurant.RestaurantID }) { restaurant ->
                         RestaurantCard(restaurant, onItemClick = onItemClick)
                     }

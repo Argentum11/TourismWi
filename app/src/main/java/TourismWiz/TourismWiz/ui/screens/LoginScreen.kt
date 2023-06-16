@@ -31,39 +31,39 @@ import androidx.compose.ui.res.stringResource
 
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
-fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit) {
+fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : () -> Unit) {
     var isLoginDialogVisible by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val toast_mes = stringResource(id = R.string.field_toast)
+    val toast_mes= stringResource(id = R.string.field_toast)
     var icon: Painter
-    if (myItem == null) {
-        if (!show)
+    if(myItem==null){
+        if(!show)
             icon = painterResource(R.drawable.heart_fill)
         else
             icon = painterResource(R.drawable.heart_empty)
-    } else {
-        icon = painterResource(R.drawable.bookmark_add)
-        if (field == "Restaurant") {
-            for (i in MyUser.restaurantList) {
-                if ((myItem as Restaurant).RestaurantID == i.RestaurantID) {
-                    icon = painterResource(R.drawable.bookmark_remove)
+    }else{
+        icon=painterResource(R.drawable.bookmark_add)
+        if(field=="Restaurant") {
+            for(i in MyUser.restaurantList){
+                if((myItem as Restaurant).RestaurantID==i.RestaurantID){
+                    icon=painterResource(R.drawable.bookmark_remove)
                     break
                 }
             }
-        } else if (field == "Hotel") {
-            for (i in MyUser.hotelList) {
-                if ((myItem as Hotel).HotelID == i.HotelID) {
-                    icon = painterResource(R.drawable.bookmark_remove)
+        }else if(field=="Hotel"){
+            for(i in MyUser.hotelList){
+                if((myItem as Hotel).HotelID==i.HotelID){
+                    icon=painterResource(R.drawable.bookmark_remove)
                     break
                 }
             }
-        } else {
-            for (i in MyUser.scenicspotList) {
-                if ((myItem as ScenicSpot).ScenicSpotID == i.ScenicSpotID) {
-                    icon = painterResource(R.drawable.bookmark_remove)
+        }else{
+            for(i in MyUser.scenicspotList){
+                if((myItem as ScenicSpot).ScenicSpotID==i.ScenicSpotID){
+                    icon=painterResource(R.drawable.bookmark_remove)
                     break
                 }
             }
@@ -72,16 +72,17 @@ fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit
     }
     Column {
         IconButton(
-            onClick = {
-                if (user != null) {
-                    if (myItem != null) {
-                        user?.email?.let { FireBase.addFavorite(it, field, myItem, context) }
-                    } else {
-                        saveList()
+                onClick = {
+                    if (user!=null) {
+                        if(myItem!=null) {
+                            user?.email?.let { FireBase.addFavorite(it,field,myItem,context) }
+                        }else{
+                            saveList()
+                        }
                     }
-                } else {
-                    isLoginDialogVisible = true
-                }
+                    else {
+                        isLoginDialogVisible = true
+                    }
             }) {
             Image(
                 painter = icon,
@@ -89,11 +90,10 @@ fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit
                 modifier = Modifier
                     .width(50.dp)
                     .height(50.dp)
-                    .padding(start = 15.dp)
             )
         }
     }
-    if (isLoginDialogVisible) {
+    if(isLoginDialogVisible) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -152,17 +152,16 @@ fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit
                             Button(
                                 onClick = {
                                     if (email != "" && password != "") {
-                                        FireBase.loginAccount(email, password, context)
-                                            ?.addOnCompleteListener { task ->
-                                                if (task.isSuccessful) {
-                                                    user = task.result
-                                                    if (user != null)
-                                                        isLoginDialogVisible = false
+                                        FireBase.loginAccount(email, password, context)?.addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                user = task.result
+                                                if(user!=null)
+                                                    isLoginDialogVisible = false
 
-                                                } else {
-                                                    user = null
-                                                }
+                                            } else {
+                                                user = null
                                             }
+                                        }
                                     } else
                                         Toast.makeText(
                                             context,
@@ -179,13 +178,13 @@ fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit
                             Button(
                                 onClick = {
                                     if (email != "" && password != "") {
-                                        FireBase.createAccount(email, password, context)
-                                            ?.addOnCompleteListener { task ->
-                                                user = task.result
-                                                if (user != null)
-                                                    isLoginDialogVisible = false
-                                            }
-                                    } else
+                                        FireBase.createAccount(email, password, context)?.addOnCompleteListener { task ->
+                                            user=task.result
+                                            if(user!=null)
+                                                isLoginDialogVisible = false
+                                        }
+                                    }
+                                    else
                                         Toast.makeText(
                                             context,
                                             toast_mes,

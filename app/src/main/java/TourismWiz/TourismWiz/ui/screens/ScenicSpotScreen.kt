@@ -126,12 +126,19 @@ fun ScenicSpotGridScreen(
     scenicSpots: List<ScenicSpot>, modifier: Modifier = Modifier,
     onItemClick: (ScenicSpot) -> Unit
 ) {
+    val filteredScenicSpots = remember { mutableStateListOf<ScenicSpot>() }
     val focusManager = LocalFocusManager.current
+    var searchQuery by remember { mutableStateOf("") }
     var total by remember { mutableStateOf(scenicSpots.size) }
 
     Column(modifier = modifier
         .fillMaxWidth()
         .clickable { focusManager.clearFocus() }) {
+        SearchTextField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query -> searchQuery = query },
+            onClearSearchQuery = { searchQuery = "" }
+        )
         when(total) {
             0 -> NoResult()
             else -> {
@@ -141,8 +148,18 @@ fun ScenicSpotGridScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
+                    filteredScenicSpots.clear()
+                    filteredScenicSpots.addAll(
+                        scenicSpots.filter { scenicSpot ->
+                            scenicSpot.ScenicSpotName.contains(searchQuery, ignoreCase = true) ||
+                                    scenicSpot.Description?.contains(
+                                        searchQuery,
+                                        ignoreCase = true
+                                    ) == true
+                        }
+                    )
                     items(
-                        items = scenicSpots,
+                        items = filteredScenicSpots,
                         key = { scenicSpot -> scenicSpot.ScenicSpotID }) { scenicSpot ->
                         ScenicSpotCard(scenicSpot, onItemClick = onItemClick)
                     }
