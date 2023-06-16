@@ -203,8 +203,7 @@ fun ScenicSpotCard(
                 )
 
                 Text(
-                    text = scenicSpot.Description?.take(80)
-                        ?: stringResource(R.string.default_scenicspot_description),
+                    text = scenicSpot.DescriptionDetail,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body2,
