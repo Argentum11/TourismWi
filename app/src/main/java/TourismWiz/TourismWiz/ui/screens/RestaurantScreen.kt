@@ -7,6 +7,7 @@ import android.net.Uri
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.data.CommentAdd
+import TourismWiz.TourismWiz.model.commentList
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -244,7 +245,7 @@ fun RestaurantCard(
 
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
-    val commentList = CommentList(id = restaurant.RestaurantID)
+    val commentList = commentList(id = restaurant.RestaurantID)
     Log.d("FireBaseRelated","trash")
     val context = LocalContext.current
     val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")

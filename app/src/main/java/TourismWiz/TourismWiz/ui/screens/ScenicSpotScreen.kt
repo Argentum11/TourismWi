@@ -4,8 +4,8 @@ import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
-import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.model.ScenicSpot
+import TourismWiz.TourismWiz.model.commentList
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -213,7 +213,7 @@ fun ScenicSpotCard(
 
 @Composable
 fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
-    val commentList = CommentList(id = scenicSpot.ScenicSpotID)
+    val commentList = commentList(id = scenicSpot.ScenicSpotID)
     val context = LocalContext.current
     var phoneNumber = ""
     val phoneNumberClick: () -> Unit = {

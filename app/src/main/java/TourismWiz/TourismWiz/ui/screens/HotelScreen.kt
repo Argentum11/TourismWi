@@ -5,6 +5,7 @@ import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.Hotel
+import TourismWiz.TourismWiz.model.commentList
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -218,7 +219,7 @@ fun HotelCard(
 
 @Composable
 fun HotelDetailScreen(hotel: Hotel) {
-    val commentList = CommentList(id = hotel.HotelID)
+    val commentList = commentList(id = hotel.HotelID)
     val context = LocalContext.current
     val phoneNumber = "0" + hotel.Phone.replace("-", "").removePrefix("886")
     val phoneNumberClick: () -> Unit = {
