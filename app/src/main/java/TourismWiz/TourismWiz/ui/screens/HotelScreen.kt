@@ -5,7 +5,6 @@ import TourismWiz.TourismWiz.data.CommentAdd
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.Hotel
-import TourismWiz.TourismWiz.model.Restaurant
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -247,6 +246,13 @@ fun HotelDetailScreen(hotel: Hotel) {
         }
         item {
             ImageDisplay(hotel.Picture.PictureUrl1)
+            Text(
+                text = hotel.HotelName,
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Cyan
+            )
         }
 
         item {

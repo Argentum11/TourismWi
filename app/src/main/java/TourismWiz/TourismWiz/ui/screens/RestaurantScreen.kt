@@ -7,9 +7,6 @@ import android.net.Uri
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.data.CommentAdd
-import TourismWiz.TourismWiz.data.FireBase
-import TourismWiz.TourismWiz.data.MyUser
-import TourismWiz.TourismWiz.model.ScenicSpot
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -276,6 +273,13 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
         }
         item {
             ImageDisplay(restaurant.Picture?.PictureUrl1)
+            Text(
+                text = restaurant.RestaurantName,
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Cyan
+            )
         }
 
         item {
@@ -398,7 +402,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
         }
         items(commentList) { comment ->
             Column {
-                Text("${comment.name}")
+                Text(comment.name)
                 Text("#${comment.email}",color = Color.Gray)
                 Row {
                     repeat(comment.rate) {

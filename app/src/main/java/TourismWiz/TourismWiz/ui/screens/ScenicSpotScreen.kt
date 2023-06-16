@@ -245,6 +245,13 @@ fun ScenicSpotDetailScreen(scenicSpot: ScenicSpot) {
         }
         item {
             ImageDisplay(scenicSpot.Picture.PictureUrl1)
+            Text(
+                text = scenicSpot.ScenicSpotName,
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Cyan
+            )
         }
 
         item {
