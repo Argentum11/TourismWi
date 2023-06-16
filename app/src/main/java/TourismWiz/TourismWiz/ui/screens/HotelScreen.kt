@@ -9,6 +9,7 @@ import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.commentList
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,13 +47,18 @@ import androidx.navigation.compose.rememberNavController
 fun HotelScreen(
     hotelUiState: HotelUiState,
     retryAction: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyword: String
 ) {
+    Log.e("qpyt", keyword)
     val navController = rememberNavController()
     var hotels by remember { mutableStateOf(mutableListOf<Hotel>()) }
     var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedHotelId by remember { mutableStateOf("") }
     var first_tap by remember { mutableStateOf(true) }
+    val derivedSearchQueryForHotel = remember(keyword) {
+        derivedStateOf { keyword }
+    }
     when(isShow){
         true->{
             if(first_tap){
@@ -78,7 +84,8 @@ fun HotelScreen(
                                         first_tap=true
                                         selectedHotelId = hotel.HotelID
                                         navController.navigate("hotelDetail")
-                                    }
+                                    },
+                                    keyword = derivedSearchQueryForHotel.value
                                 )
                             }
                         }
@@ -111,7 +118,8 @@ fun HotelScreen(
                                         first_tap=true
                                         selectedHotelId = hotel.HotelID
                                         navController.navigate("hotelDetail")
-                                    }
+                                    },
+                                    keyword = derivedSearchQueryForHotel.value
                                 )
                             }
                         }
@@ -131,18 +139,13 @@ fun HotelScreen(
 fun HotelGridScreen(
     hotels: List<Hotel>,
     modifier: Modifier = Modifier,
-    onItemClick: (Hotel) -> Unit
+    onItemClick: (Hotel) -> Unit,
+    keyword: String
 ) {
     val filteredHotels = remember { mutableStateListOf<Hotel>() }
-    var searchQuery by remember { mutableStateOf("") }
     var total by remember { mutableStateOf(hotels.size) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        SearchTextField(
-            searchQuery = searchQuery,
-            onSearchQueryChange = { query -> searchQuery = query },
-            onClearSearchQuery = { searchQuery = "" }
-        )
         when(total) {
             0 -> NoResult()
             else -> {
@@ -155,9 +158,9 @@ fun HotelGridScreen(
                     filteredHotels.clear()
                     filteredHotels.addAll(
                         hotels.filter { hotel ->
-                            hotel.HotelName.contains(searchQuery, ignoreCase = true) ||
+                            hotel.HotelName.contains(keyword, ignoreCase = true) ||
                                     hotel.Description?.contains(
-                                        searchQuery,
+                                        keyword,
                                         ignoreCase = true
                                     ) == true
                         }
@@ -181,7 +184,7 @@ fun HotelCard(
             .padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(1f)
-            .clickable { onItemClick(hotel)}
+            .clickable { onItemClick(hotel) }
         ,
         elevation = 8.dp,
         backgroundColor = lightBlue,
@@ -353,7 +356,7 @@ fun HotelDetailScreen(hotel: Hotel) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = hotel.Description ?: "sdfs",
+                    text = hotel.Description ?: stringResource(id = R.string.default_hotel_description),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
