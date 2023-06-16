@@ -10,6 +10,8 @@
     <string name="login_f">login fail</string>
     <string name="change_name_s">update name success</string>
     <string name="change_name_f">update name fail, please try again later</string>
+    <string name="add_favorite">add from my favorite successful</string>
+    <string name="remove_favorite">delete from my favorite successful</string>
     //LoginScreen
     <string name="login_email">account(email)</string>
     <string name="login_password">password</string>

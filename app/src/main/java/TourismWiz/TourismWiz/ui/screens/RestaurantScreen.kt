@@ -7,6 +7,7 @@ import android.net.Uri
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.data.CommentAdd
+import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.model.commentList
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -35,6 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.saveable.rememberSaveable
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,11 +49,15 @@ fun RestaurantScreen(
     onTotalUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
-    var fav_list by remember { mutableStateOf(mutableListOf<Restaurant>()) }
-    var isShow by remember { mutableStateOf(false) }
+    var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedRestaurantId by remember { mutableStateOf("") }
+    var first_tap by remember { mutableStateOf(true) }
     when (isShow) {
         true -> {
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+            }
             when (restaurantUiState) {
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -62,17 +68,16 @@ fun RestaurantScreen(
                                 LoginScreen(
                                     field = "Restaurant",
                                     myItem = null,
-                                    show = isShow,
+                                    show = isShow || first_tap,
                                     saveList = {
-                                        fav_list = it as MutableList<Restaurant>
                                         isShow = isShow == false
-                                        Log.d("FireBaseRelated", "true in" + isShow.toString())
                                     })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 RestaurantGridScreen(
-                                    restaurants = fav_list,
+                                    restaurants = MyUser.restaurantList,
                                     onTotalUpdated = onTotalUpdated,
                                     onItemClick = { restaurant ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedRestaurantId = restaurant.RestaurantID
                                         navController.navigate("restaurantDetail")
                                     }
@@ -99,17 +104,16 @@ fun RestaurantScreen(
                                 LoginScreen(
                                     field = "Restaurant",
                                     myItem = null,
-                                    show = isShow,
+                                    show = isShow || first_tap,
                                     saveList = {
-                                        fav_list = it as MutableList<Restaurant>
                                         isShow = isShow == false
-                                        Log.d("FireBaseRelated", "true in" + isShow.toString())
                                     })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 RestaurantGridScreen(
                                     restaurants = restaurantUiState.restaurants,
                                     onTotalUpdated = onTotalUpdated,
                                     onItemClick = { restaurant ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedRestaurantId = restaurant.RestaurantID
                                         navController.navigate("restaurantDetail")
                                     }

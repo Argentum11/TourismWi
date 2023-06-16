@@ -210,7 +210,7 @@ class FireBase {
                 }
             db.collection("comment").document()
         }
-        public fun addFavorite(email: String, field: String, item: Any) {
+        public fun addFavorite(email: String, field: String, item: Any,context: Context) {
             val input = hashMapOf(
                 "field" to field,
                 "item" to gson.toJson(item)
@@ -273,8 +273,10 @@ class FireBase {
                         }else{
                             MyUser.scenicspotList.add(item as ScenicSpot)
                         }
+                        Toast.makeText(context, context.getString(R.string.add_favorite), Toast.LENGTH_SHORT).show()
                     }
                     else {
+                        deleteData(email, id!!)
                         if(field=="Restaurant") {
                             MyUser.restaurantList.removeAll{it.RestaurantID==item_id!!}
                         }else if(field=="Hotel"){
@@ -282,7 +284,7 @@ class FireBase {
                         }else{
                             MyUser.scenicspotList.removeAll{it.ScenicSpotID==item_id!!}
                         }
-                        deleteData(email, id!!)
+                        Toast.makeText(context, context.getString(R.string.remove_favorite), Toast.LENGTH_SHORT).show()
                     }
                 }
             }

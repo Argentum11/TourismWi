@@ -10,6 +10,8 @@
     <string name="login_f">登入失敗</string>
     <string name="change_name_s">更改暱稱成功</string>
     <string name="change_name_f">更改暱稱失敗 請稍後再試</string>
+    <string name="add_favorite">加入我的最愛成功</string>
+    <string name="remove_favorite">移除我的最愛成功</string>
     //LoginScreen
     <string name="login_email">帳號(email)</string>
     <string name="login_password">密碼</string>

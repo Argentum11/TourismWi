@@ -2,6 +2,7 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.CommentAdd
+import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.ScenicSpot
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,11 +47,15 @@ fun ScenicSpotScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
-    var fav_list by remember { mutableStateOf(mutableListOf<ScenicSpot>()) }
-    var isShow by remember { mutableStateOf(false)}
+    var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedScenicSpotId by remember { mutableStateOf("") }
+    var first_tap by remember { mutableStateOf(true) }
     when(isShow){
         true ->{
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+            }
             when (scenicSpotUiState) {
                 is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
                 is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -57,15 +63,14 @@ fun ScenicSpotScreen(
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
-                                LoginScreen(field = "ScenicSpot", myItem = null,isShow, saveList = {
-                                    fav_list = it as MutableList<ScenicSpot>
+                                LoginScreen(field = "ScenicSpot", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
-                                ScenicSpotGridScreen(scenicSpots = fav_list,
+                                ScenicSpotGridScreen(scenicSpots = MyUser.scenicspotList,
                                     modifier,
                                     onItemClick = { scenicSpot ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedScenicSpotId = scenicSpot.ScenicSpotID
                                         navController.navigate("scenicSpotDetail")
                                     })
@@ -88,15 +93,14 @@ fun ScenicSpotScreen(
                     NavHost(navController = navController, startDestination = "scenicSpotGrid") {
                         composable("scenicSpotGrid") {
                             Column {
-                                LoginScreen(field = "ScenicSpot", myItem = null,isShow, saveList = {
-                                    fav_list = it as MutableList<ScenicSpot>
+                                LoginScreen(field = "ScenicSpot", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 ScenicSpotGridScreen(scenicSpots = scenicSpotUiState.scenicSpots,
                                     modifier,
                                     onItemClick = { scenicSpot ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedScenicSpotId = scenicSpot.ScenicSpotID
                                         navController.navigate("scenicSpotDetail")
                                     })

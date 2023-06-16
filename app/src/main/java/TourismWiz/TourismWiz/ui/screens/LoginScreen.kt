@@ -25,19 +25,20 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
-fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : (MutableList<Any>) -> Unit) {
+fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : () -> Unit) {
     var isLoginDialogVisible by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val toast_mes= stringResource(id = R.string.field_toast)
-    var icon = painterResource(R.drawable.heart_fill)
+    var icon: Painter
     if(myItem==null){
         if(!show)
             icon = painterResource(R.drawable.heart_fill)
@@ -73,58 +74,10 @@ fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : (MutableList<A
         IconButton(
                 onClick = {
                     if (user!=null) {
-                        if(myItem==null) {
-                            if(field=="Restaurant") {
-                                var ml = mutableListOf<Any>()
-                                user?.email?.let {
-                                    FireBase.getFavorite(it, field) {
-                                        for (i in it) {
-                                            val r: Restaurant = gson.fromJson(
-                                                i.get("item").toString(),
-                                                Restaurant::class.java
-                                            )
-                                            //Log.d("FireBaseRelated",i.toString())
-                                            ml.add(r)
-                                        }
-                                        //Log.d("FireBaseRelated",ml.toString())
-                                        saveList(ml)
-                                    }
-                                }
-                            }else if(field== "ScenicSpot"){
-                                var ml = mutableListOf<Any>()
-                                user?.email?.let {
-                                    FireBase.getFavorite(it, field) {
-                                        for (i in it) {
-                                            val r: ScenicSpot = gson.fromJson(
-                                                i.get("item").toString(),
-                                                ScenicSpot::class.java
-                                            )
-                                            //Log.d("FireBaseRelated",i.toString())
-                                            ml.add(r)
-                                        }
-                                        //Log.d("FireBaseRelated",ml.toString())
-                                        saveList(ml)
-                                    }
-                                }
-                            }else{
-                                var ml = mutableListOf<Any>()
-                                user?.email?.let {
-                                    FireBase.getFavorite(it, field) {
-                                        for (i in it) {
-                                            val r: Hotel = gson.fromJson(
-                                                i.get("item").toString(),
-                                                Hotel::class.java
-                                            )
-                                            //Log.d("FireBaseRelated",i.toString())
-                                            ml.add(r)
-                                        }
-                                        //Log.d("FireBaseRelated",ml.toString())
-                                        saveList(ml)
-                                    }
-                                }
-                            }
+                        if(myItem!=null) {
+                            user?.email?.let { FireBase.addFavorite(it,field,myItem,context) }
                         }else{
-                            user?.email?.let { FireBase.addFavorite(it,field,myItem) }
+                            saveList()
                         }
                     }
                     else {

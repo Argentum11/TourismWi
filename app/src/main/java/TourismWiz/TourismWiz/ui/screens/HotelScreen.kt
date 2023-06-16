@@ -2,6 +2,7 @@ package TourismWiz.TourismWiz.ui.screens
 
 import TourismWiz.TourismWiz.R
 import TourismWiz.TourismWiz.data.CommentAdd
+import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.data.darkBlue
 import TourismWiz.TourismWiz.data.lightBlue
 import TourismWiz.TourismWiz.model.Hotel
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,11 +50,15 @@ fun HotelScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    var isShow by rememberSaveable { mutableStateOf(false) }
     var selectedHotelId by remember { mutableStateOf("") }
-    var fav_list by remember { mutableStateOf(mutableListOf<Hotel>()) }
-    var isShow by remember { mutableStateOf(false)}
+    var first_tap by remember { mutableStateOf(true) }
     when(isShow){
         true->{
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+            }
             when (hotelUiState) {
                 is HotelUiState.Loading -> LoadingScreen(modifier)
                 is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -60,17 +66,15 @@ fun HotelScreen(
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
-                                LoginScreen(field = "Hotel", myItem = null,isShow, saveList = {
-                                    fav_list = it as MutableList<Hotel>
+                                LoginScreen(field = "Hotel", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
-
                                 HotelGridScreen(
-                                    hotels = fav_list,
+                                    hotels = MyUser.hotelList,
                                     modifier,
                                     onItemClick = { hotel ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedHotelId = hotel.HotelID
                                         navController.navigate("hotelDetail")
                                     }
@@ -94,17 +98,15 @@ fun HotelScreen(
                     NavHost(navController = navController, startDestination = "hotelGrid") {
                         composable("hotelGrid") {
                             Column {
-                                LoginScreen(field = "Hotel", myItem = null,isShow, saveList = {
-                                    fav_list = it as MutableList<Hotel>
+                                LoginScreen(field = "Hotel", myItem = null,isShow || first_tap, saveList = {
                                     isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
                                 })
-                                Log.d("FireBaseRelated", "true out " + fav_list.toString())
-
                                 HotelGridScreen(
                                     hotels = hotelUiState.hotels,
                                     modifier,
                                     onItemClick = { hotel ->
+                                        isShow=false
+                                        first_tap=true
                                         selectedHotelId = hotel.HotelID
                                         navController.navigate("hotelDetail")
                                     }
