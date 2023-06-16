@@ -37,6 +37,7 @@ fun CommentAdd(id:String) {
     val inExpandedChange={isExpanded:Boolean->expanded=isExpanded}
     val stars=listOf("","✰","✰✰","✰✰✰","✰✰✰✰","✰✰✰✰✰")
     val toast_mes= stringResource(id = R.string.field_toast)
+    var displayName by remember { mutableStateOf(MyUser.user?.displayName ?: "") }
 
     Column {
         IconButton(
@@ -239,10 +240,8 @@ fun CommentAdd(id:String) {
                                 onClick = {
                                     if (rate != "" && comment != "") {
                                         MyUser.user?.email?.let {
-                                            MyUser.user?.displayName?.let { it1 ->
                                                 FireBase.addComment(id,rate,
-                                                    it, it1,comment)
-                                            }
+                                                    it, displayName,comment)
                                         }
                                         isCommentDialogVisible=false
                                     }
