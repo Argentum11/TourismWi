@@ -1,15 +1,9 @@
 package TourismWiz.TourismWiz.data
 
 import TourismWiz.TourismWiz.R
-import TourismWiz.TourismWiz.data.FireBase
-import TourismWiz.TourismWiz.data.FireBase.Companion.gson
-import TourismWiz.TourismWiz.data.MyUser
 import TourismWiz.TourismWiz.data.MyUser.Companion.user
-import TourismWiz.TourismWiz.model.Restaurant
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -27,7 +21,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import com.google.firebase.firestore.DocumentSnapshot
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommentAdd(id:String) {
@@ -56,7 +49,7 @@ fun CommentAdd(id:String) {
                 }
             }) {
             Image(
-                painter = painterResource(R.drawable.wiz),
+                painter = painterResource(R.drawable.commenticon),
                 contentDescription = "Heart Icon",
                 modifier = Modifier
                     .width(30.dp)
@@ -80,7 +73,7 @@ fun CommentAdd(id:String) {
                     focusManager.clearFocus()
                 },
                 buttons = {
-                    Column() {
+                    Column {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -190,7 +183,7 @@ fun CommentAdd(id:String) {
                     focusManager.clearFocus()
                 },
                 buttons = {
-                    Column() {
+                    Column {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -198,7 +191,7 @@ fun CommentAdd(id:String) {
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.wiz),
+                                painter = painterResource(id = R.drawable.commenticon),
                                 contentDescription = "wiz",
                                 modifier = Modifier.fillMaxWidth()
 
@@ -242,7 +235,6 @@ fun CommentAdd(id:String) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            //Spacer(modifier = Modifier.width(16.dp))
                             Button(
                                 onClick = {
                                     if (rate != "" && comment != "") {
@@ -274,20 +266,3 @@ fun CommentAdd(id:String) {
         }
     }
 }
-/*
-Row {
-                            radioOptions.forEach { option ->
-                                Row(Modifier.padding(vertical = 4.dp)) {
-                                    RadioButton(
-                                        selected = (selectedOption.value == option),
-                                        onClick = { selectedOption.value = option }
-                                    )
-                                    Text(
-                                        text = option,
-                                        modifier = Modifier.
-                                    )
-                                }
-                            }
-                        }
-
- */

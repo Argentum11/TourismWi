@@ -375,21 +375,7 @@ fun HotelDetailScreen(hotel: Hotel) {
             )
         }
         items(commentList) { comment ->
-            Column {
-                Text("${comment.name}")
-                Text("#${comment.email}",color = Color.Gray)
-                Row {
-                    repeat(comment.rate) {
-                        Image(
-                            painter = painterResource(R.drawable.star),
-                            contentDescription = "Image",
-                            modifier = Modifier.size(20.dp,20.dp)
-                        )
-                    }
-                }
-                Text("${comment.comment}")
-                Divider()
-            }
+            CommentDisplay(comment = comment)
         }
     }
 }

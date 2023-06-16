@@ -48,10 +48,10 @@ fun RestaurantScreen(
 ) {
     val navController = rememberNavController()
     var fav_list by remember { mutableStateOf(mutableListOf<Restaurant>()) }
-    var isShow by remember { mutableStateOf(false)}
+    var isShow by remember { mutableStateOf(false) }
     var selectedRestaurantId by remember { mutableStateOf("") }
-    when (isShow){
-        true ->{
+    when (isShow) {
+        true -> {
             when (restaurantUiState) {
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -59,11 +59,15 @@ fun RestaurantScreen(
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
-                                LoginScreen(field = "Restaurant", myItem = null,show=isShow, saveList = {
-                                    fav_list = it as MutableList<Restaurant>
-                                    isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
-                                })
+                                LoginScreen(
+                                    field = "Restaurant",
+                                    myItem = null,
+                                    show = isShow,
+                                    saveList = {
+                                        fav_list = it as MutableList<Restaurant>
+                                        isShow = isShow == false
+                                        Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                    })
                                 Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 RestaurantGridScreen(
                                     restaurants = fav_list,
@@ -84,7 +88,7 @@ fun RestaurantScreen(
                 }
             }
         }
-        false ->{
+        false -> {
             when (restaurantUiState) {
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -92,11 +96,15 @@ fun RestaurantScreen(
                     NavHost(navController = navController, startDestination = "restaurantGrid") {
                         composable("restaurantGrid") {
                             Column {
-                                LoginScreen(field = "Restaurant", myItem = null,show=isShow, saveList = {
-                                    fav_list = it as MutableList<Restaurant>
-                                    isShow = isShow == false
-                                    Log.d("FireBaseRelated", "true in" + isShow.toString())
-                                })
+                                LoginScreen(
+                                    field = "Restaurant",
+                                    myItem = null,
+                                    show = isShow,
+                                    saveList = {
+                                        fav_list = it as MutableList<Restaurant>
+                                        isShow = isShow == false
+                                        Log.d("FireBaseRelated", "true in" + isShow.toString())
+                                    })
                                 Log.d("FireBaseRelated", "true out " + fav_list.toString())
                                 RestaurantGridScreen(
                                     restaurants = restaurantUiState.restaurants,
@@ -246,7 +254,7 @@ fun RestaurantCard(
 @Composable
 fun RestaurantDetailScreen(restaurant: Restaurant) {
     val commentList = commentList(id = restaurant.RestaurantID)
-    Log.d("FireBaseRelated","trash")
+    Log.d("FireBaseRelated", "trash")
     val context = LocalContext.current
     val phoneNumber = "0" + restaurant.Phone.replace("-", "").removePrefix("886")
     val phoneNumberClick: () -> Unit = {
@@ -267,7 +275,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             .padding(16.dp)
     ) {
         item {
-            LoginScreen(field = "Restaurant", myItem = restaurant,false, saveList = {})
+            LoginScreen(field = "Restaurant", myItem = restaurant, false, saveList = {})
         }
         item {
             CommentAdd(id = restaurant.RestaurantID)
@@ -402,21 +410,7 @@ fun RestaurantDetailScreen(restaurant: Restaurant) {
             )
         }
         items(commentList) { comment ->
-            Column {
-                Text(comment.name)
-                Text("#${comment.email}",color = Color.Gray)
-                Row {
-                    repeat(comment.rate) {
-                        Image(
-                            painter = painterResource(R.drawable.star),
-                            contentDescription = "Image",
-                            modifier = Modifier.size(20.dp,20.dp)
-                        )
-                    }
-                }
-                Text("${comment.comment}")
-                Divider()
-            }
+            CommentDisplay(comment = comment)
         }
 
     }
