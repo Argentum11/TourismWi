@@ -8,7 +8,6 @@ import TourismWiz.TourismWiz.data.MyUser.Companion.user
 import TourismWiz.TourismWiz.model.Hotel
 import TourismWiz.TourismWiz.model.Restaurant
 import TourismWiz.TourismWiz.model.ScenicSpot
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -26,11 +25,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.Text
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.runBlocking
 
 //callback: (result: MutableList<Restaurant>) -> Unit
 @Composable
@@ -41,12 +37,12 @@ fun LoginScreen(field:String, myItem:Any?,show:Boolean,saveList : (MutableList<A
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val toast_mes= stringResource(id = R.string.field_toast)
-    var icon = painterResource(R.drawable.heart)
+    var icon = painterResource(R.drawable.heart_fill)
     if(myItem==null){
         if(!show)
-            icon = painterResource(R.drawable.heart)
+            icon = painterResource(R.drawable.heart_fill)
         else
-            icon = painterResource(R.drawable.holo)
+            icon = painterResource(R.drawable.heart_empty)
     }else{
         icon=painterResource(R.drawable.bookmark_add)
         if(field=="Restaurant") {
