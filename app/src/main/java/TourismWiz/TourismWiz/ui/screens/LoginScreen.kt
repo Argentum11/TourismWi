@@ -40,7 +40,7 @@ fun LoginScreen(field: String, myItem: Any?, show: Boolean, saveList: () -> Unit
     val toast_mes = stringResource(id = R.string.field_toast)
     var icon: Painter
     if (myItem == null) {
-        if (!show)
+        if (show)
             icon = painterResource(R.drawable.heart_fill)
         else
             icon = painterResource(R.drawable.heart_empty)

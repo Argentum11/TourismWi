@@ -52,10 +52,7 @@ fun ScenicSpotScreen(
     var first_tap by remember { mutableStateOf(true) }
     when(isShow){
         true ->{
-            if(first_tap){
-                first_tap=false
-                isShow=!isShow
-            }
+
             when (scenicSpotUiState) {
                 is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
                 is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -87,6 +84,11 @@ fun ScenicSpotScreen(
             }
         }
         false ->{
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+                isShow=!isShow
+            }
             when (scenicSpotUiState) {
                 is ScenicSpotUiState.Loading -> LoadingScreen(modifier)
                 is ScenicSpotUiState.Error -> ErrorScreen(retryAction, modifier)

@@ -55,10 +55,7 @@ fun RestaurantScreen(
     var first_tap by remember { mutableStateOf(true) }
     when (isShow) {
         true -> {
-            if(first_tap){
-                first_tap=false
-                isShow=!isShow
-            }
+
             when (restaurantUiState) {
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -96,6 +93,11 @@ fun RestaurantScreen(
             }
         }
         false -> {
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+                isShow=!isShow
+            }
             when (restaurantUiState) {
                 is RestaurantUiState.Loading -> LoadingScreen(modifier)
                 is RestaurantUiState.Error -> ErrorScreen(retryAction, modifier)

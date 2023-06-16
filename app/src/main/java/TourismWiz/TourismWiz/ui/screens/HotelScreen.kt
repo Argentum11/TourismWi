@@ -55,10 +55,6 @@ fun HotelScreen(
     var first_tap by remember { mutableStateOf(true) }
     when(isShow){
         true->{
-            if(first_tap){
-                first_tap=false
-                isShow=!isShow
-            }
             when (hotelUiState) {
                 is HotelUiState.Loading -> LoadingScreen(modifier)
                 is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
@@ -92,6 +88,11 @@ fun HotelScreen(
             }
         }
         false->{
+            if(first_tap){
+                first_tap=false
+                isShow=!isShow
+                isShow=!isShow
+            }
             when (hotelUiState) {
                 is HotelUiState.Loading -> LoadingScreen(modifier)
                 is HotelUiState.Error -> ErrorScreen(retryAction, modifier)
