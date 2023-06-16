@@ -117,7 +117,7 @@ fun TourismWizApp() {
                     val scenicSpotViewModel: ScenicSpotViewModel =
                         viewModel(factory = ScenicSpotViewModel.Factory)
 
-                    Column{
+                    Column {
                         CitySelector(
                             selectedCity = selectedCityForScenicSpot,
                             onCitySelected = { city ->
@@ -132,7 +132,11 @@ fun TourismWizApp() {
                         )
                         ScenicSpotScreen(
                             scenicSpotUiState = scenicSpotViewModel.scenicSpotUiState,
-                            retryAction = {scenicSpotViewModel.getScenicSpots(selectedCityForScenicSpot)}
+                            retryAction = {
+                                scenicSpotViewModel.getScenicSpots(
+                                    selectedCityForScenicSpot
+                                )
+                            }
                         )
                     }
                 }
@@ -187,7 +191,11 @@ fun CitySelector(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val onExpandedChange = { isExpanded: Boolean -> expanded = isExpanded }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = Modifier.padding(start = 15.dp)
+    ) {
         TextField(
             stringResource(id = City.getStringId(selectedCity)),
             {},
